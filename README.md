@@ -1,0 +1,1 @@
+For my Matric Computer Science term project I was required to build a simple Finance Application in Java.
