@@ -7,6 +7,7 @@
 package helpers;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,7 +24,7 @@ public class Files {
 
         try {
             if (java.nio.file.Files.exists(path)) {
-                for (String line : java.nio.file.Files.readAllLines(path)) {
+                for (String line : java.nio.file.Files.readAllLines(path, StandardCharsets.UTF_8)) {
                     if (line.substring(0, line.indexOf('=')).equals("logs")) {
                         logs = Boolean.parseBoolean(line.substring(line.indexOf("=") + 1));
                     } else {

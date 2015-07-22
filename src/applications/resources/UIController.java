@@ -21,7 +21,7 @@ public class UIController extends JComponent {
      * Adds a listener to automatically hide all other panes in this component
      * when one is shown.
      *
-     * @param pane
+     * @param pane JComponent to swap
      */
     public void swap(JComponent pane) {
         pane.addComponentListener(new ComponentAdapter() {

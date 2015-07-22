@@ -6,6 +6,7 @@
 
 package socket;
 
+import applications.resources.components.TextArea;
 import helpers.Debug;
 
 import java.io.*;
@@ -19,35 +20,33 @@ public class Server {
     /**
      * Start a socket server
      */
-    private static void listen() {
+    public void listen(Integer port, TextArea logs) {
+
+        logs = logs != null ? logs : new TextArea();
 
         try {
-            ServerSocket server = new ServerSocket(33036);
-            debug.debug("Server is running", "GREEN");
+            ServerSocket server = new ServerSocket(port);
+            debug.debug("Server is running", "GREEN", logs);
 
             while (true) {
                 Handler handler;
                 try {
-                    handler = new Handler(server.accept());
+                    handler = new Handler(server.accept(), logs);
                     Thread client = new Thread(handler);
                     client.start();
                 } catch (IOException e) {
-                    debug.debug("CLIENT_ACCEPT Failed", "ERROR");
+                    debug.debug("CLIENT_ACCEPT Failed", "ERROR", logs);
                     System.exit(-1);
                 }
             }
 
         } catch (IOException e) {
-            debug.debug("SERVER_START Failed", "ERROR");
+            debug.debug("SERVER_START Failed", "ERROR", logs);
         }
     }
 
-    private void handler() {
+    public void main(String[] args) throws InterruptedException {
 
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-
-        listen();
+        listen(8080, null);
     }
 }

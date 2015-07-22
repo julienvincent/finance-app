@@ -3,22 +3,35 @@
  | Created by Julien Vincent
  |--------------------------------------------------------------------------
  **/
-
 package applications.admin.components;
 
-import javax.swing.*;
+import applications.resources.components.Button;
+import applications.resources.components.TextField;
+import helpers.Debug;
+
+import javax.swing.JComponent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Login extends JComponent {
+public final class Login extends JComponent {
 
-    Button button;
+    Button login;
+    TextField email, password;
+
+    Debug debug = new Debug();
 
     public Login() {
 
         setLayout(new GridBagLayout());
-//        setPreferredSize(new Dimension(600, 610));
 
-        button = new Button("Some Text");
+        login = new Button("LOGIN", null);
+        email = new TextField();
+        password = new TextField();
+
+        login.addActionListener(e -> debug.debug("CLICKED"));
+
+        build();
 
     }
 
@@ -29,6 +42,15 @@ public class Login extends JComponent {
         constraint.anchor = GridBagConstraints.PAGE_START;
         constraint.gridx = 0;
         constraint.gridy = 0;
-        add(button, constraint);
+        constraint.gridheight = 1;
+        constraint.gridwidth = 2;
+
+        constraint.ipadx = 250;
+        add(email, constraint);
+        constraint.insets = new Insets(10, 0, 0, 0);
+        constraint.gridy = 1;
+        add(password, constraint);
+        constraint.gridy = 2;
+        add(login, constraint);
     }
 }

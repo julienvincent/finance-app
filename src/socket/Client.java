@@ -19,12 +19,12 @@ public class Client {
      */
     private static void connect() throws InterruptedException {
 
-        BufferedReader in = null;
-        PrintWriter out = null;
+        BufferedReader in;
+        PrintWriter out;
         Debug debug = new Debug();
 
         try{
-            Socket socket = new Socket("localhost", 33036);
+            Socket socket = new Socket("localhost", 8080);
             debug.debug("CONNECTED", "GREEN");
 
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

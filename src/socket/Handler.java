@@ -6,6 +6,7 @@
 
 package socket;
 
+import applications.resources.components.TextArea;
 import helpers.Debug;
 
 import java.io.*;
@@ -19,14 +20,17 @@ public class Handler implements Runnable {
     BufferedReader in = null;
     PrintWriter out = null;
 
+    TextArea logs;
+
     /**
      * Client instance running on new thread
-     * @param client
+     * @param client Client Socket
      */
-    Handler(Socket client) {
+    Handler(Socket client, TextArea logs) {
 
         this.client = client;
-        debug.debug("CLIENT_CONNECTED", "GREEN");
+        this.logs = logs;
+        debug.debug("CLIENT_CONNECTED", "GREEN", logs);
     }
 
     /**
@@ -40,16 +44,17 @@ public class Handler implements Runnable {
             out = new PrintWriter(client.getOutputStream(), true);
 
             out.println("text");
+            logs.append("\ntext");
             while (true) {
                 try {
-                    debug.debug(in.readLine(), "BLUE");
+                    debug.debug(in.readLine(), "BLUE", logs);
                 } catch (IOException e) {
-                    debug.debug("CLIENT_DISCONNECTED", "ERROR");
+                    debug.debug("CLIENT_DISCONNECTED", "ERROR", logs);
                     break;
                 }
             }
         } catch (IOException e) {
-            debug.debug("CONNECTION_FAILED", "ERROR");
+            debug.debug("CONNECTION_FAILED", "ERROR", logs);
             System.exit(-1);
         }
     }

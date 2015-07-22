@@ -8,48 +8,53 @@ package applications.admin;
 
 import applications.admin.components.Login;
 import applications.resources.UIController;
-import javafx.scene.layout.Pane;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Admin extends UIController {
+public class Admin {
 
     static JFrame frame;
-    static Pane current;
-
-    static Login login;
 
     public static void run() {
 
         frame = new JFrame();
+        Swap swap = new Swap();
 
-        frame.setSize(400, 250);
+        frame.setSize(450, 300);
         frame.setLocationRelativeTo(null);
         frame.setUndecorated(false);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        login = new Login();
-
-//        this.swap(login);
-//        login.setVisible(true);
-
-//        frame.add(login);
+        frame.add(swap);
 
         frame.setVisible(true);
-    }
-
-    public Admin() {
-
-        super();
     }
 
     public static void main(String[] args) {
 
         run();
     }
+}
 
+class Swap extends UIController {
+    
+    static Login login;
+    
+    public Swap() {
+        
+        super();
+        
+        login = new Login();
+        
+        this.swap(login);
+        login.setVisible(true);
+        
+    }
+    
     @Override
     protected void paintComponent(Graphics g) {
+
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setColor(new Color(52, 73, 94));
