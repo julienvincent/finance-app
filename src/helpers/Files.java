@@ -28,11 +28,11 @@ public class Files {
                     if (line.substring(0, line.indexOf('=')).equals("logs")) {
                         logs = Boolean.parseBoolean(line.substring(line.indexOf("=") + 1));
                     } else {
-                        java.nio.file.Files.write(path, "logs=true".getBytes());
+                        java.nio.file.Files.write(path, "logs=false".getBytes());
                     }
                 }
             } else {
-                java.nio.file.Files.write(path, "logs=true".getBytes());
+                java.nio.file.Files.write(path, "logs=false".getBytes());
             }
         } catch (IOException e) {
 

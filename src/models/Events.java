@@ -4,9 +4,13 @@
  |--------------------------------------------------------------------------
  **/
 
-package applications.client;
+package models;
 
-public class Client {
+public interface Events {
 
-
+    /**
+     * Fired when a user is Authorized
+     * @param user User instance returned by the server.
+     */
+    public void userAuthorized(User user);
 }

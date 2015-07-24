@@ -36,7 +36,7 @@ public class Debug {
      */
     public void debug(String m) {
         if (Files.logs())
-            System.out.println(m);
+            System.out.println("\u001B[36m" + m);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Debug {
 
         logs.append("\n" + m);
         if (Files.logs())
-            System.out.println(m);
+            System.out.println("\u001B[36m" + m);
     }
 
     /**
@@ -59,9 +59,7 @@ public class Debug {
     public void debug(String m, String c) {
 
         if (Files.logs())
-            if (c.equals("DEFAULT"))
-                System.out.println(m);
-            else if (c.equals("ERROR"))
+            if (c.equals("ERROR"))
                 System.out.println("\u001B[31m" + m);
             else if (c.equals("GREEN"))
                 System.out.println("\u001B[32m" + m);

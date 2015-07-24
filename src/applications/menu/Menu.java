@@ -1,26 +1,26 @@
 /*
  |--------------------------------------------------------------------------
- | Admin Application
+ | Created by Julien Vincent
  |--------------------------------------------------------------------------
  **/
 
-package applications.admin;
+package applications.menu;
 
-import applications.admin.components.Login;
-import applications.resources.UIController;
+import applications.menu.components.Demo;
 import applications.resources.Socket;
+import applications.resources.UIController;
 import socket.Client;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Admin {
+public class Menu {
 
     static JFrame frame;
     static public Client Socket;
 
     /**
-     * Start the Admin JFrame and add build it's associated components
+     * Start the Menu JFrame and add build it's associated components
      */
     public static void run() {
 
@@ -52,21 +52,21 @@ public class Admin {
 }
 
 class Swap extends UIController {
-    
-    static Login login;
+
+    static Demo demo;
 
     /**
-     * Add all UI components to the swap component
+     * Add all the demo component to the swap pane and make it visible
      */
     public Swap() {
-        
+
         super();
-        
-        login = new Login();
-        
-        this.swap(login);
-        login.setVisible(true);
-        
+
+        demo = new Demo();
+
+        this.swap(demo);
+        demo.setVisible(true);
+
     }
 
     /**

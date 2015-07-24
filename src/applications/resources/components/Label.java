@@ -7,34 +7,23 @@
 package applications.resources.components;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
-public class TextArea extends JTextArea {
+public class Label extends JLabel {
 
-    public TextArea() {
+    public Label(String label) {
 
-        super();
+        super(label);
 
-        this.setOpaque(false);
-        this.setEditable(false);
-        this.setAutoscrolls(true);
-        DefaultCaret caret = (DefaultCaret)this.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        this.setForeground(Color.DARK_GRAY);
-        this.setCaretColor(Color.black);
-        this.setBorder(BorderFactory.createEmptyBorder(5, 25, 3, 5));
-        this.setFont(new Font("Arial", Font.PLAIN, 17));
-        this.setForeground(new Color(255, 255, 255));
-
-        this.setWrapStyleWord(true);
-        this.setLineWrap(true);
-        this.setWrapStyleWord(true);
+        setFont(new Font("Arial", Font.PLAIN, 14));
+        setName(label);
+        repaint();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
 
+        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -46,10 +35,9 @@ public class TextArea extends JTextArea {
         g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 
-        g2d.setPaint(new Color(86, 137, 146));
-        g2d.fillRect(0, 0, getWidth(), getHeight());
-
-        super.paintComponent(g);
+        g2d.setFont(getFont());
+        g2d.setPaint(new Color(255, 255, 255));
+        g2d.drawString(getName(), getWidth(), getHeight());
         g2d.dispose();
     }
 }

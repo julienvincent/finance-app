@@ -3,53 +3,83 @@
  | Created by Julien Vincent
  |--------------------------------------------------------------------------
  **/
-
 package socket;
 
 import helpers.Debug;
+import models.Dispatcher;
+import models.Model;
+import models.User;
 
 import java.io.*;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client {
 
+    ObjectInputStream in;
+    volatile ObjectOutputStream out;
+    Debug debug = new Debug();
+
     /**
-     * Connect to a local socket server on port 33036
-     * @throws InterruptedException
+     * Connect to a local socket server and start IO streams
+     *
+     * @param port Port to connect to
      */
-    private static void connect() throws InterruptedException {
+    public void connect(Integer port) {
 
-        BufferedReader in;
-        PrintWriter out;
-        Debug debug = new Debug();
-
-        try{
-            Socket socket = new Socket("localhost", 8080);
+        try {
+            Socket socket = new Socket("localhost", port);
             debug.debug("CONNECTED", "GREEN");
 
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(socket.getInputStream());
 
             while (true) {
                 try {
-                    debug.debug(in.readLine(), "BLUE");
-                    out.println("from client");
+                    handleResponse(in.readObject());
                 } catch (IOException e) {
                     debug.debug("CONNECTION_LOST", "ERROR");
                     break;
                 }
             }
-
-            connect();
+            connect(8080);
         } catch (Exception e) {
             debug.debug("Could not connect to host", "ERROR");
-            Thread.sleep(3000);
-            connect();
+            try {
+                if (out != null)
+                    out.close();
+                Thread.sleep(3000);
+                connect(8080);
+            } catch (InterruptedException ex) {
+                debug.debug("Sleep failed", "ERROR");
+            } catch (IOException ex) {
+                debug.debug("Stream couldn't close", "ERROR");
+            }
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public void out(Model model) {
 
-        connect();
+        try {
+            out.reset();
+            out.writeObject(model);
+            debug.debug("Sent serialized object to server. [" + model.model + "]");
+        } catch (IOException e) {
+            debug.debug("Could not write object", "ERROR");
+            e.printStackTrace();
+        }
+    }
+
+    private void handleResponse(Object model) {
+
+        if (model instanceof User)
+            ((User)model).dispatch();
+    }
+
+    public void main(String[] args) throws InterruptedException {
+
+        connect(8080);
     }
 }

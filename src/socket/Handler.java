@@ -3,11 +3,12 @@
  | Created by Julien Vincent
  |--------------------------------------------------------------------------
  **/
-
 package socket;
 
 import applications.resources.components.TextArea;
 import helpers.Debug;
+import models.Model;
+import models.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -16,14 +17,13 @@ public class Handler implements Runnable {
 
     Socket client;
     Debug debug = new Debug();
-
-    BufferedReader in = null;
-    PrintWriter out = null;
-
+    ObjectInputStream in;
+    volatile ObjectOutputStream out;
     TextArea logs;
 
     /**
      * Client instance running on new thread
+     *
      * @param client Client Socket
      */
     Handler(Socket client, TextArea logs) {
@@ -40,22 +40,47 @@ public class Handler implements Runnable {
     public void run() {
 
         try {
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out = new PrintWriter(client.getOutputStream(), true);
+            out = new ObjectOutputStream(client.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(client.getInputStream());
 
-            out.println("text");
-            logs.append("\ntext");
             while (true) {
                 try {
-                    debug.debug(in.readLine(), "BLUE", logs);
+                    try {
+                        handleResponse(in.readObject());
+                    } catch (ClassNotFoundException e) {
+                        debug.debug("Unable to read object", "ERROR", logs);
+                    }
                 } catch (IOException e) {
                     debug.debug("CLIENT_DISCONNECTED", "ERROR", logs);
+                    out.close();
                     break;
                 }
             }
         } catch (IOException e) {
             debug.debug("CONNECTION_FAILED", "ERROR", logs);
-            System.exit(-1);
+        }
+    }
+
+    private void handleResponse(Object model) {
+
+        debug.debug("Received serialized object from client. [" + ((Model) model).model + "]", logs);
+
+        if (model instanceof User) {
+            try {
+                if (((User) model).auth()) {
+
+                    debug.debug("server: AUTHORIZED", "BLUE", logs);
+                    out.writeObject(model);
+                } else {
+                    debug.debug("server: UNAUTHORIZED", "ERROR", logs);
+                    out.writeObject(model);
+                }
+
+                debug.debug("Sent serialized object to client. [" + ((User) model).model + "]", logs);
+            } catch (IOException e) {
+                debug.debug("Couldn't write object", "ERROR", logs);
+            }
         }
     }
 }

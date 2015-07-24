@@ -16,13 +16,14 @@ import java.util.Properties;
 
 public class Connector {
 
-    Connection connection;
+    static Connection connection;
     Builder builder = new Builder();
-    Debug debug = new Debug();
+    static Debug debug = new Debug();
 
-    String Name = "DevBase";
-    String User = "root";
-    String Password = "";
+    static String Name = "DevBase";
+    static String User = "root";
+    static String Password = "";
+    static Boolean connected = false;
 
     public Connector() {
 
@@ -43,7 +44,7 @@ public class Connector {
         }
     }
 
-    private void connect() {
+    public void connect() {
 
         try {
 
@@ -53,8 +54,8 @@ public class Connector {
             props.setProperty("password", Password);
 
             connection = DriverManager.getConnection("jdbc:derby:", props);
+            connected = true;
 
-            //logs
             debug.debug("Connected to database " + Name, "GREEN");
         } catch (SQLException ex) {
 
@@ -62,9 +63,27 @@ public class Connector {
         }
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
 
         return connection;
+    }
+
+    public static void setConnection() {
+
+        try {
+
+            Properties props = new Properties();
+            props.setProperty("databaseName", Name);
+            props.setProperty("user", User);
+            props.setProperty("password", Password);
+            props.setProperty("create", "true");
+
+            connection = DriverManager.getConnection("jdbc:derby:", props);
+            connected = true;
+        } catch (SQLException ex) {
+
+            debug.debug("Couldn't connect to database " + Name, "ERROR");
+        }
     }
 
     public static void main(String args[]) {

@@ -4,23 +4,22 @@
  |--------------------------------------------------------------------------
  **/
 
-package applications.server.components;
+package applications.resources;
 
-import applications.resources.components.TextArea;
-import socket.Server;
+import socket.Client;
 
 public class Socket implements Runnable {
 
-    TextArea logs;
+    static Client connection;
 
-    public Socket(TextArea logs) {
+    public Socket(Client connection) {
 
-        this.logs = logs;
+        Socket.connection = connection;
     }
 
     @Override
     public void run() {
 
-        new Server().listen(8080, this.logs);
+        connection.connect(8080);
     }
 }

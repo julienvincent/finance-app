@@ -26,7 +26,7 @@ public class Server {
 
         try {
             ServerSocket server = new ServerSocket(port);
-            debug.debug("Server is running", "GREEN", logs);
+            debug.debug("Server is running\n", "GREEN", logs);
 
             while (true) {
                 Handler handler;

@@ -10,6 +10,8 @@ import applications.resources.components.*;
 import applications.resources.components.Button;
 import applications.resources.components.ScrollPane;
 import applications.resources.components.TextArea;
+import database.Builder;
+import database.Connector;
 import helpers.Debug;
 import socket.Server;
 
@@ -32,6 +34,8 @@ public class Logs extends JComponent {
         button = new Button("START", null);
         logs = new TextArea();
 
+        new Connector();
+
         Thread socket = new Thread(new Socket(logs));
         socket.start();
         build();
@@ -48,8 +52,8 @@ public class Logs extends JComponent {
         constraint.gridwidth = 1;
 
         constraint.gridx = 1;
-        constraint.ipadx = 300;
-        constraint.ipady = 130;
+        constraint.ipadx = 350;
+        constraint.ipady = 200;
         add(new ScrollPane(logs), constraint);
     }
 }

@@ -7,29 +7,17 @@
 package applications.resources.components;
 
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
-public class TextArea extends JTextArea {
+public class PasswordField extends JPasswordField {
 
-    public TextArea() {
+    public PasswordField() {
 
         super();
 
         this.setOpaque(false);
-        this.setEditable(false);
-        this.setAutoscrolls(true);
-        DefaultCaret caret = (DefaultCaret)this.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        this.setForeground(Color.DARK_GRAY);
-        this.setCaretColor(Color.black);
-        this.setBorder(BorderFactory.createEmptyBorder(5, 25, 3, 5));
-        this.setFont(new Font("Arial", Font.PLAIN, 17));
-        this.setForeground(new Color(255, 255, 255));
-
-        this.setWrapStyleWord(true);
-        this.setLineWrap(true);
-        this.setWrapStyleWord(true);
+        this.setBorder(BorderFactory.createEmptyBorder(12, 20, 15, -20));
+        this.setFont(new Font("Arial", Font.PLAIN, 16));
     }
 
     @Override
@@ -46,8 +34,8 @@ public class TextArea extends JTextArea {
         g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 
-        g2d.setPaint(new Color(86, 137, 146));
-        g2d.fillRect(0, 0, getWidth(), getHeight());
+        g2d.setPaint(new Color(81, 116, 146));
+        g2d.fillRect(0, 0, 250, 45);
 
         super.paintComponent(g);
         g2d.dispose();
