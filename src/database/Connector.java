@@ -25,6 +25,9 @@ public class Connector {
     static String Password = "";
     static Boolean connected = false;
 
+    /**
+     * Checks if there is a database. If there is, connect to it. If not, create one.
+     */
     public Connector() {
 
         try {
@@ -44,6 +47,9 @@ public class Connector {
         }
     }
 
+    /**
+     * Attempt to connect to the database.
+     */
     public void connect() {
 
         try {
@@ -63,11 +69,18 @@ public class Connector {
         }
     }
 
+    /**
+     * Return the connection instance
+     * @return Connection
+     */
     public static Connection getConnection() {
 
         return connection;
     }
 
+    /**
+     * Reset the connection after a database was created.
+     */
     public static void setConnection() {
 
         try {

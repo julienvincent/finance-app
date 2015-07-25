@@ -18,6 +18,12 @@ public class Query {
     ResultSet result;
     Debug debug = new Debug();
 
+    /**
+     * A query wrapper to simplify querying the database.
+     *
+     * @param query The query string to execute.
+     * @return If a SELECT was called, return the ResultSet
+     */
     public ResultSet query(String query) {
 
         new Connector().connect();

@@ -15,6 +15,7 @@ import java.awt.*;
 public class Server {
 
     static JFrame frame;
+    static Logs logs;
 
     public static void run() {
 
@@ -35,29 +36,27 @@ public class Server {
 
         run();
     }
-}
 
-class Swap extends UIController {
+    public static class Swap extends UIController {
 
-    static Logs logs;
+        public Swap() {
 
-    public Swap() {
+            super();
 
-        super();
+            logs = new Logs();
 
-        logs = new Logs();
+            this.swap(logs);
+            logs.setVisible(true);
 
-        this.swap(logs);
-        logs.setVisible(true);
+        }
 
-    }
+        @Override
+        protected void paintComponent(Graphics g) {
 
-    @Override
-    protected void paintComponent(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g;
 
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.setColor(new Color(52, 73, 94));
-        g2d.fillRect(0, 0, getWidth(), getHeight());
+            g2d.setColor(new Color(52, 73, 94));
+            g2d.fillRect(0, 0, getWidth(), getHeight());
+        }
     }
 }

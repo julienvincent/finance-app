@@ -6,9 +6,14 @@
 package socket;
 
 import applications.resources.components.TextArea;
+import coms.Dispatcher;
+import coms.EventsAdapter;
 import helpers.Debug;
-import models.Model;
-import models.User;
+import models.*;
+import socket.subhandlers.ExpenseHandler;
+import socket.subhandlers.OrderHandler;
+import socket.subhandlers.UserHandler;
+import socket.subhandlers.WageHandler;
 
 import java.io.*;
 import java.net.Socket;
@@ -20,6 +25,8 @@ public class Handler implements Runnable {
     ObjectInputStream in;
     volatile ObjectOutputStream out;
     TextArea logs;
+
+    EventsAdapter adapter;
 
     /**
      * Client instance running on new thread
@@ -44,6 +51,8 @@ public class Handler implements Runnable {
             out.flush();
             in = new ObjectInputStream(client.getInputStream());
 
+            listen();
+
             while (true) {
                 try {
                     try {
@@ -62,25 +71,52 @@ public class Handler implements Runnable {
         }
     }
 
+    /**
+     * Handle to model instance returned by the client.
+     *
+     * @param model Model instance returned from a client.
+     */
     private void handleResponse(Object model) {
 
         debug.debug("Received serialized object from client. [" + ((Model) model).model + "]", logs);
 
-        if (model instanceof User) {
-            try {
-                if (((User) model).auth()) {
+        if (model instanceof User)
+            new UserHandler((User) model, out, logs);
+        else if (model instanceof Order)
+            new OrderHandler((Order) model, out, logs);
+        else if (model instanceof Expense)
+            new ExpenseHandler((Expense) model, out, logs);
+        else if (model instanceof Wage)
+            new WageHandler((Wage) model, out, logs);
+    }
 
-                    debug.debug("server: AUTHORIZED", "BLUE", logs);
-                    out.writeObject(model);
-                } else {
-                    debug.debug("server: UNAUTHORIZED", "ERROR", logs);
-                    out.writeObject(model);
-                }
+    /**
+     * Listen for store updates and notify the associated clients.
+     */
+    private void listen() {
 
-                debug.debug("Sent serialized object to client. [" + ((User) model).model + "]", logs);
-            } catch (IOException e) {
-                debug.debug("Couldn't write object", "ERROR", logs);
+        adapter = new EventsAdapter() {
+
+            @Override
+            public void ordersUpdated(Order order) {
+
+                order.action = "GET";
+                new OrderHandler(order, out, logs);
             }
-        }
+
+            @Override
+            public void expensesUpdated(Expense expense) {
+
+                expense.action = "GET";
+                new ExpenseHandler(expense, out, logs);
+            }
+
+            @Override
+            public void wageUpdated(Wage wage) {
+
+                wage.action = "GET";
+                new WageHandler(wage, out, logs);
+            }
+        };
     }
 }

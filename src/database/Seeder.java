@@ -6,10 +6,7 @@
 
 package database;
 
-import models.Expense;
-import models.Item;
-import models.Order;
-import models.User;
+import models.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,10 +21,11 @@ public class Seeder {
         item();
         order();
         expense();
+        wage();
     }
 
     /**
-     * Create a new User instance and call its' create method.
+     * Create a new UserHandler instance and call its' create method.
      */
     private void user() {
 
@@ -36,6 +34,7 @@ public class Seeder {
         user.surname = "Doe";
         user.email = "johndoe@gmail.com";
         user.password = "secret";
+        user.userType = 1;
         user.create();
     }
 
@@ -72,8 +71,18 @@ public class Seeder {
     private void expense() {
 
         Expense expense = new Expense();
-        expense.name = "New Expense";
+        expense.name = "NewExpense";
         expense.amount = 20000;
         expense.create();
+    }
+
+    /**
+     * Set a new wage and call its update method.
+     */
+    private void wage() {
+
+        Wage wage = new Wage();
+        wage.newWage = 20000.0;
+        wage.update();
     }
 }

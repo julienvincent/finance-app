@@ -1,37 +1,31 @@
 /*
  |--------------------------------------------------------------------------
- | Login interface.
- |
- | - Matches user credentials with the database.
- | - If a match is made, Swap out this component with the Manager
+ | Created by Julien Vincent
  |--------------------------------------------------------------------------
  **/
 
-package applications.admin.components;
+package applications.staff.components;
 
-import applications.admin.Admin;
-import applications.resources.components.*;
+import applications.staff.Staff;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
+import applications.resources.components.PasswordField;
 import applications.resources.components.TextField;
 import coms.EventsAdapter;
 import helpers.Debug;
-import coms.Events;
-import models.Order;
 import models.User;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import coms.Dispatcher;
 
 public final class Login extends JComponent {
-    
+
     Button login;
     TextField email;
     PasswordField password;
-    Label label;
+    public Label label;
 
     User User = new User();
 
@@ -54,15 +48,24 @@ public final class Login extends JComponent {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!email.getText().equals(""))
-                if (!password.getText().equals("")) {
-                    User.action = "AUTH";
-                    User.email = email.getText();
-                    User.password = password.getText();
-                    User.userType = 1;
-                    Admin.Socket.out(User);
-                }
+                    if (!password.getText().equals("")) {
+                        User.action = "AUTH";
+                        User.email = email.getText();
+                        User.password = password.getText();
+                        User.userType = 0;
+                        Staff.Socket.out(User);
+                    }
             }
         });
+
+        new EventsAdapter() {
+
+            @Override
+            public void auth(User user) {
+
+                Staff.manager.setVisible(true);
+            }
+        };
 
         build();
     }

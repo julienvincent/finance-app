@@ -8,6 +8,8 @@ package applications.menu.components;
 
 import applications.menu.Menu;
 import applications.resources.components.Button;
+import applications.staff.Staff;
+import coms.EventsAdapter;
 import helpers.Debug;
 
 import javax.swing.*;
@@ -21,7 +23,7 @@ public class Demo extends JComponent {
     Button order;
 
     Order Order = new Order();
-
+    EventsAdapter adapter;
     Debug debug = new Debug();
 
     /**
@@ -37,12 +39,21 @@ public class Demo extends JComponent {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                Order.action = "CREATE";
                 Order.itemId = 1;
                 Order.userId = 1;
                 Order.amount = 5;
                 Menu.Socket.out(Order);
             }
         });
+
+        adapter = new EventsAdapter() {
+
+            @Override
+            public void connected() {
+                debug.debug("connected");
+            }
+        };
 
         build();
     }

@@ -6,8 +6,8 @@
 
 package models;
 
+import coms.Dispatcher;
 import database.Query;
-import helpers.Debug;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +20,7 @@ public class User extends Model {
     public String surname;
     public String email;
     public String password;
+    public Integer userType;
 
     public String error;
 
@@ -38,12 +39,12 @@ public class User extends Model {
      */
     public void dispatch() {
 
-        Dispatcher.userAuthorized(this);
+        Dispatcher.auth(this);
     }
 
     /**
-     * Authenticate the User Instance and return it's status
-     * @return Boolean
+     * Authenticate the provided User
+     * @return Boolean was successful.
      */
     public boolean auth() {
 
@@ -54,7 +55,10 @@ public class User extends Model {
             while (result.next()) {
                 if (result.getInt("id") > 0)
                     if (result.getString("password").equals(password))
-                        authorized = true;
+                        if (result.getInt("user_type") >= userType)
+                            authorized = true;
+                        else
+                            error = "Your user does not have the correct privileges";
                     else
                         error = "Incorrect Password";
             }
@@ -70,8 +74,8 @@ public class User extends Model {
     }
 
     /**
-     * Create a new User and authorize that user.
-     * @return boolean
+     * Create a new user and log that user in.
+     * @return boolean was successful.
      */
     public boolean create() {
 
@@ -82,7 +86,7 @@ public class User extends Model {
                 "'" + surname + "', " +
                 "'" + email + "', " +
                 "'" + password + "', " +
-                "1)");
+                userType + ")");
 
         return authorized = true;
     }

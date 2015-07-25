@@ -14,8 +14,9 @@ public class Debug {
 
     /**
      * Debug to the console with custom colors, and print to the provided Text Area.
-     * @param m message
-     * @param c color
+     *
+     * @param m    message
+     * @param c    color
      * @param logs Text Area
      */
     public void debug(String m, String c, TextArea logs) {
@@ -32,6 +33,7 @@ public class Debug {
 
     /**
      * Debug to the console.
+     *
      * @param m message
      */
     public void debug(String m) {
@@ -41,7 +43,8 @@ public class Debug {
 
     /**
      * Debug to the console and print to the provided Text Area
-     * @param m message
+     *
+     * @param m    message
      * @param logs Text Area
      */
     public void debug(String m, TextArea logs) {
@@ -53,6 +56,7 @@ public class Debug {
 
     /**
      * Debug to the console with custom colors
+     *
      * @param m message
      * @param c color
      */

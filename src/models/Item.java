@@ -22,7 +22,7 @@ public class Item extends Model {
 
     /**
      * Create a new Item.
-     * @return Boolean
+     * @return Boolean was successful.
      */
     public Boolean create() {
 

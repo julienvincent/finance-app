@@ -23,7 +23,6 @@ public class Builder {
     String[] schema = new Schema().schema();
     Debug debug = new Debug();
 
-    String Name = "DevBase";
     String User = "root";
     String Password = "";
 

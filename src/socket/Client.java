@@ -5,15 +5,13 @@
  **/
 package socket;
 
+import coms.Dispatcher;
+import coms.EventsAdapter;
 import helpers.Debug;
-import models.Dispatcher;
-import models.Model;
-import models.User;
+import models.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Client {
 
@@ -35,6 +33,8 @@ public class Client {
             out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
             in = new ObjectInputStream(socket.getInputStream());
+
+            Dispatcher.connected();
 
             while (true) {
                 try {
@@ -60,6 +60,11 @@ public class Client {
         }
     }
 
+    /**
+     * Write a specified model to the server.
+     *
+     * @param model Instance of model
+     */
     public void out(Model model) {
 
         try {
@@ -72,10 +77,21 @@ public class Client {
         }
     }
 
+    /**
+     * Handle the model response from the server.
+     *
+     * @param model Model instance returned by server.
+     */
     private void handleResponse(Object model) {
 
         if (model instanceof User)
-            ((User)model).dispatch();
+            ((User) model).dispatch();
+        else if (model instanceof Order)
+            ((Order) model).dispatch();
+        else if (model instanceof Expense)
+            ((Expense) model).dispatch();
+        else if (model instanceof Wage)
+            ((Wage) model).dispatch();
     }
 
     public void main(String[] args) throws InterruptedException {
