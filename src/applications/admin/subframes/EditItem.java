@@ -7,33 +7,32 @@
 package applications.admin.subframes;
 
 import applications.admin.Admin;
-import applications.admin.components.Expenses;
 import applications.notify.Notify;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
 import applications.resources.components.TextField;
-import models.Expense;
+import models.Item;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EditExpense {
+public class EditItem {
 
     public static JFrame frame;
 
     /**
-     * Start a new frame to edit the selected Expense.
+     * Start a new Frame to edit the selected item
      *
-     * @param expense Expense instance
+     * @param item Item instance
      */
-    public EditExpense(Expense expense) {
+    public EditItem(Item item) {
 
         super();
 
         frame = new JFrame();
-        Pane pane = new Pane(expense);
+        Pane pane = new Pane(item);
 
         frame.setSize(450, 300);
         frame.setLocationRelativeTo(null);
@@ -47,26 +46,31 @@ public class EditExpense {
 
         Label label;
         Button edit, cancel;
-        TextField amount;
+        TextField name, buyPrice, sellPrice, stock;
+        Item item;
 
         /**
          * Instantiate new components and add action listeners to them
          */
-        public Pane(Expense expense) {
+        public Pane(Item item) {
+
+            this.item = item;
 
             setLayout(new GridBagLayout());
 
             label = new Label("Edit an Expense");
 
-            amount = new TextField("Amount (" + expense.amount + ")");
+            buyPrice = new TextField("Buy Price (" + item.buyPrice + ")");
+            sellPrice = new TextField("Sell Price (" + item.sellPrice + ")");
+            stock = new TextField("amount (" + item.stock + ")");
 
-            edit = new Button("ADD", 14);
+            edit = new Button("EDIT", 14);
             cancel = new Button("CANCEL", 14);
 
             cancel.addActionListener(new ActionListener() {
 
                 /**
-                 * Close the Frame.
+                 * Close the Frame
                  *
                  * @param e Action click
                  */
@@ -79,9 +83,9 @@ public class EditExpense {
             edit.addActionListener(new ActionListener() {
 
                 /**
-                 * If validation was successful, update
-                 * the item instance with the users input
-                 * and write the instance to the stream.
+                 * If validation was successful,
+                 * update the item instance with the users input
+                 * and write it to the stream
                  *
                  * @param e Action click
                  */
@@ -89,21 +93,37 @@ public class EditExpense {
                 public void actionPerformed(ActionEvent e) {
 
                     Boolean run = true;
-                    if (!amount.getText().isEmpty())
-                        if (amount.getText().matches("[0-9]+"))
-                            expense.amount = Integer.parseInt(amount.getText());
+                    if (!buyPrice.getText().isEmpty())
+                        if (buyPrice.getText().matches("^\\d+(\\.\\d{1,2})?$"))
+                            item.buyPrice = Double.parseDouble(buyPrice.getText());
                         else {
-                            new Notify("Amount must be an integer");
+                            new Notify("Buy price must be an integer");
                             run = false;
                         }
+
+                    if (!sellPrice.getText().isEmpty())
+                        if (sellPrice.getText().matches("^\\d+(\\.\\d{1,2})?$"))
+                            item.sellPrice = Double.parseDouble(sellPrice.getText());
+                        else {
+                            run = false;
+                            new Notify("Sell price must be an integer");
+                        }
+
+                    if (!stock.getText().isEmpty())
+                        if (stock.getText().matches("[0-9]+"))
+                            item.stock = Integer.parseInt(stock.getText());
+                        else {
+                            run = false;
+                            new Notify("Stock must be an integer");
+                        }
+
                     if (run)
                         if (Admin.connected) {
-                            expense.action = "EDIT";
-                            Admin.Socket.out(expense);
-
+                            item.action = "EDIT";
+                            Admin.Socket.out(item);
                             frame.dispose();
                         } else
-                            new Notify("The socket server isn't running... Please start it and try again.");
+                            new Notify("The Socket Server isn't running... Please start it and try again");
                 }
             });
 
@@ -127,12 +147,17 @@ public class EditExpense {
 
             constraint.insets = new Insets(0, 0, 10, 0);
             constraint.ipadx = 250;
+            constraint.gridy = 1;
             constraint.gridy = 2;
-            add(amount, constraint);
+            add(sellPrice, constraint);
+            constraint.gridy = 3;
+            add(buyPrice, constraint);
+            constraint.gridy = 4;
+            add(stock, constraint);
 
             constraint.ipadx = 0;
             constraint.insets = new Insets(0, 0, 30, 100);
-            constraint.gridy = 3;
+            constraint.gridy = 5;
             add(edit, constraint);
             constraint.insets = new Insets(0, 100, 30, 0);
             add(cancel, constraint);

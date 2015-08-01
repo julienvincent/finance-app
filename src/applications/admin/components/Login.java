@@ -10,6 +10,7 @@
 package applications.admin.components;
 
 import applications.admin.Admin;
+import applications.notify.Notify;
 import applications.resources.components.*;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
@@ -24,10 +25,11 @@ import javax.swing.JComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import coms.Dispatcher;
 
 public final class Login extends JComponent {
-    
+
     Button login;
     TextField email;
     PasswordField password;
@@ -45,24 +47,54 @@ public final class Login extends JComponent {
         setLayout(new GridBagLayout());
 
         login = new Button("LOGIN", null);
-        email = new TextField();
-        password = new PasswordField();
+        email = new TextField("Email");
+        password = new PasswordField("Password");
         label = new Label("");
 
         login.addActionListener(new ActionListener() {
 
+            /**
+             * If all fields are filled in, create a new user
+             * instance with the AUTH action and write it to
+             * the stream.
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!email.getText().equals(""))
-                if (!password.getText().equals("")) {
-                    User.action = "AUTH";
-                    User.email = email.getText();
-                    User.password = password.getText();
-                    User.userType = 1;
-                    Admin.Socket.out(User);
-                }
+                if (!email.getText().isEmpty())
+                    if (!password.getText().isEmpty())
+                        if (Admin.connected) {
+                            User.action = "AUTH";
+                            User.email = email.getText();
+                            User.password = password.getText();
+                            User.userType = 1;
+                            Admin.Socket.out(User);
+                        } else
+                            new Notify("The socket server isn't running... Please start it and try again.");
+                    else
+                        new Notify("Password is not filled in.");
+                else
+                    new Notify("Email is not filled in.");
             }
         });
+
+        new EventsAdapter() {
+
+            /**
+             * If the user instance is authorized,
+             * launch the home component.
+             *
+             * @param user User instance returned by the server.
+             */
+            @Override
+            public void auth(User user) {
+                if (user.authorized)
+                    Admin.home.setVisible(true);
+                else
+                    new Notify(user.error);
+            }
+        };
 
         build();
     }

@@ -13,6 +13,9 @@ import models.Wage;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+/**
+ * Handle all wage actions.
+ */
 public class WageHandler {
 
     Wage wage;
@@ -22,7 +25,8 @@ public class WageHandler {
     Debug debug = new Debug();
 
     /**
-     * Determine what the Model wants to do.
+     * Determine what the Model wants to do and fire
+     * the appropriate action.
      *
      * @param wage Wage instance
      * @param out  Socket Server out stream
@@ -42,6 +46,7 @@ public class WageHandler {
 
     /**
      * Call the create method within Wage.
+     * If Wage returns successfully, write the response to the stream.
      */
     private void update() {
         try {
@@ -56,6 +61,7 @@ public class WageHandler {
 
     /**
      * Call the get method within Wage.
+     * If Wage returns successfully, write the response to the stream.
      */
     private void get() {
         new Debug().debug("here");

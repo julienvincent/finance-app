@@ -22,9 +22,9 @@ public class Demo extends JComponent {
 
     Button order;
 
+    Boolean connected = false;
+
     Order Order = new Order();
-    EventsAdapter adapter;
-    Debug debug = new Debug();
 
     /**
      * Instantiate new components and add action listeners to them
@@ -37,21 +37,32 @@ public class Demo extends JComponent {
 
         order.addActionListener(new ActionListener() {
 
+            /**
+             * If connected, create a new order
+             * and write it to the stream.
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
-                Order.action = "CREATE";
-                Order.itemId = 1;
-                Order.userId = 1;
-                Order.amount = 5;
-                Menu.Socket.out(Order);
+                if (connected) {
+                    Order.action = "CREATE";
+                    Order.itemId = 1;
+                    Order.amount = 5;
+                    Menu.Socket.out(Order);
+                }
             }
         });
 
-        adapter = new EventsAdapter() {
+        new EventsAdapter() {
 
+            /**
+             * Determine if the application connected to
+             * the Socket Server
+             */
             @Override
             public void connected() {
-                debug.debug("connected");
+                connected = true;
             }
         };
 

@@ -40,6 +40,12 @@ public final class Home extends JComponent {
         create = new Button("REGISTER USER", 15);
 
         expenses.addActionListener(new ActionListener() {
+
+            /**
+             * Launch the Expenses component
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 Admin.frame.setSize(450, 400);
@@ -48,6 +54,12 @@ public final class Home extends JComponent {
         });
 
         wages.addActionListener(new ActionListener() {
+
+            /**
+             * Launch the Wages component
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 Admin.frame.setSize(450, 400);
@@ -56,20 +68,46 @@ public final class Home extends JComponent {
         });
 
         create.addActionListener(new ActionListener() {
+
+            /**
+             * Launch the Register component
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
-                Admin.frame.setSize(450, 400);
+                Admin.frame.setSize(450, 500);
                 Admin.register.setVisible(true);
             }
         });
 
-        new EventsAdapter() {
+        stock.addActionListener(new ActionListener() {
 
+            /**
+             * Launch the Stock component
+             *
+             * @param e Action click
+             */
             @Override
-            public void connected() {
-
+            public void actionPerformed(ActionEvent e) {
+                Admin.frame.setSize(450, 400);
+                Admin.stock.setVisible(true);
             }
-        };
+        });
+
+        income.addActionListener(new ActionListener() {
+
+            /**
+             * Launch the Statement component
+             *
+             * @param e Action click
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Admin.frame.setSize(450, 400);
+                Admin.statement.setVisible(true);
+            }
+        });
 
         build();
     }

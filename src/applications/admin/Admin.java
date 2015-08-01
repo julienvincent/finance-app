@@ -10,7 +10,6 @@ import applications.admin.components.*;
 import applications.resources.UIController;
 import applications.resources.Socket;
 import coms.EventsAdapter;
-import models.User;
 import socket.Client;
 
 import javax.swing.*;
@@ -26,6 +25,10 @@ public class Admin {
     public static Wages wages;
     public static Home home;
     public static Register register;
+    public static Stock stock;
+    public static Statement statement;
+
+    public static Boolean connected = false;
 
     /**
      * Start the Admin JFrame and add build it's associated components
@@ -45,6 +48,15 @@ public class Admin {
         Socket = new Client();
         Thread socket = new Thread(new Socket(Socket));
         socket.start();
+
+        new EventsAdapter() {
+
+            @Override
+            public void connected() {
+
+                connected = true;
+            }
+        };
 
         frame.setVisible(true);
     }
@@ -73,24 +85,17 @@ public class Admin {
             home = new Home();
             wages = new Wages();
             register = new Register();
+            stock = new Stock();
+            statement = new Statement();
 
             this.swap(login);
             this.swap(expenses);
             this.swap(home);
             this.swap(wages);
             this.swap(register);
-//            login.setVisible(true);
-
-            home.setVisible(true);
-
-            new EventsAdapter() {
-
-                @Override
-                public void auth(User user) {
-
-                    home.setVisible(true);
-                }
-            };
+            this.swap(stock);
+            this.swap(statement);
+            login.setVisible(true);
         }
 
         /**

@@ -17,6 +17,9 @@ public class Server {
     static JFrame frame;
     static Logs logs;
 
+    /**
+     * launch a new Frame for the server.
+     */
     public static void run() {
 
         frame = new JFrame();
@@ -32,6 +35,11 @@ public class Server {
         frame.setVisible(true);
     }
 
+    /**
+     * For manual running of this instance
+     *
+     * @param args args
+     */
     public static void main(String[] args) {
 
         run();
@@ -50,6 +58,11 @@ public class Server {
 
         }
 
+        /**
+         * Repaint the Frame.
+         *
+         * @param g Graphics component
+         */
         @Override
         protected void paintComponent(Graphics g) {
 

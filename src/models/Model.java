@@ -10,7 +10,8 @@ package models;
 import java.io.Serializable;
 
 /**
- * Is serializable to allow writing over Streams.
+ * Model Parent class, is serializable for
+ * stream communication
  */
 public class Model implements Serializable {
 
@@ -19,10 +20,27 @@ public class Model implements Serializable {
 
     /**
      * Set the models Instance type-hint
+     *
      * @param model Identifier
      */
     public Model(String model) {
 
         this.model = model;
+    }
+
+    /**
+     * Parent dispatch method.
+     * - Allows calling of model dispatchers without needing to know to whom the instance belongs.
+     */
+    public void dispatch() {
+        System.out.println("over here");
+    }
+
+    /**
+     * Parent dispatch method with a action string.
+     * - Allows calling of model dispatchers without needing to know to whom the instance belongs.
+     */
+    public void dispatch(String action) {
+
     }
 }

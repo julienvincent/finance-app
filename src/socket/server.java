@@ -21,7 +21,7 @@ public class Server {
     /**
      * Start a Socket Server on the specified port and listen for
      * client connections. Opens a new thread with a handler for
-     * each new Client.
+     * each client that connects.
      *
      * @param port Port the server will start on.
      * @param logs TextArea to append logs.
@@ -51,7 +51,12 @@ public class Server {
         }
     }
 
-    public void main(String[] args) throws InterruptedException {
+    /**
+     * Used to run the server manually (testing purposes)
+     *
+     * @param args args
+     */
+    public void main(String[] args) {
 
         listen(8080, null);
     }

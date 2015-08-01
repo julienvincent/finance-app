@@ -22,7 +22,7 @@ public class Menu {
     public static Demo demo;
 
     /**
-     * Start the Menu JFrame and add build it's associated components
+     * Start the Menu JFrame and build it's associated components
      */
     public static void run() {
 
@@ -44,7 +44,7 @@ public class Menu {
     }
 
     /**
-     * Run the Admin application
+     * Run the application
      *
      * @param args args
      */

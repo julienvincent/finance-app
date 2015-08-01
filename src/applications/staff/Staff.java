@@ -25,11 +25,13 @@ public class Staff {
     static JFrame frame;
     static public Client Socket;
 
+    public static Boolean connected = false;
+
     public static Login login;
     public static OrderManager manager;
 
     /**
-     * Start the Menu JFrame and add build it's associated components
+     * Start the Staff JFrame and build it's associated components
      */
     public static void run() {
 
@@ -48,10 +50,18 @@ public class Staff {
         socket.start();
 
         frame.setVisible(true);
+
+        new EventsAdapter() {
+            @Override
+            public void connected() {
+
+                connected = true;
+            }
+        };
     }
 
     /**
-     * Run the Admin application
+     * Run the application
      * @param args args
      */
     public static void main(String[] args) {
@@ -73,8 +83,8 @@ public class Staff {
 
             this.swap(login);
             this.swap(manager);
-            manager.setVisible(true);
-//        login.setVisible(true);
+
+            login.setVisible(true);
 
         }
 

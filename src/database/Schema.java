@@ -37,10 +37,8 @@ public class Schema {
                 "CREATE TABLE orders (" +
                         "id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                         "code VARCHAR(10) NOT NULL, " +
-                        "user_id INT, " +
                         "completed BOOLEAN NOT NULL, " +
                         "canceled BOOLEAN NOT NULL, " +
-                        "FOREIGN KEY (user_id) REFERENCES users (id), " +
                         "PRIMARY KEY (code)" +
                         ")",
 
@@ -49,8 +47,8 @@ public class Schema {
                         "order_code VARCHAR(10), " +
                         "item_id INT, " +
                         "amount INT NOT NULL, " +
-                        "FOREIGN KEY (order_code) REFERENCES orders (code), " +
-                        "FOREIGN KEY (item_id) REFERENCES items (id), " +
+                        "FOREIGN KEY (order_code) REFERENCES orders (code) ON DELETE CASCADE, " +
+                        "FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE, " +
                         "PRIMARY KEY (id)" +
                         ")",
 

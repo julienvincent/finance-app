@@ -41,6 +41,9 @@ public class Logs extends JComponent {
         build();
     }
 
+    /**
+     * Build the sub-components to the main frame.
+     */
     public void build() {
 
         GridBagConstraints constraint = new GridBagConstraints();

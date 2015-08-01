@@ -37,6 +37,7 @@ public class User extends Model {
     /**
      * Fire the AUTHORIZED event and pass itself as a parameter.
      */
+    @Override
     public void dispatch() {
 
         Dispatcher.auth(this);
@@ -44,6 +45,7 @@ public class User extends Model {
 
     /**
      * Authenticate the provided User
+     *
      * @return Boolean was successful.
      */
     public boolean auth() {
@@ -75,6 +77,7 @@ public class User extends Model {
 
     /**
      * Create a new user and log that user in.
+     *
      * @return boolean was successful.
      */
     public boolean create() {

@@ -15,6 +15,7 @@ public class Files {
 
     /**
      * Read from the config file and determine if logs are enabled
+     *
      * @return Boolean logs
      */
     public static Boolean logs() {

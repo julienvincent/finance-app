@@ -10,14 +10,14 @@ import coms.Dispatcher;
 import coms.EventsAdapter;
 import helpers.Debug;
 import models.*;
-import socket.subhandlers.ExpenseHandler;
-import socket.subhandlers.OrderHandler;
-import socket.subhandlers.UserHandler;
-import socket.subhandlers.WageHandler;
+import socket.subhandlers.*;
 
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * A handler that runs on a thread, handles connected clients
+ */
 public class Handler implements Runnable {
 
     Socket client;
@@ -29,7 +29,7 @@ public class Handler implements Runnable {
     EventsAdapter adapter;
 
     /**
-     * Client instance running on new thread
+     * Update state, log that a client has connected.
      *
      * @param client Client Socket
      */
@@ -41,7 +41,8 @@ public class Handler implements Runnable {
     }
 
     /**
-     * Listen to the client Stream and respond
+     * Listen to the client's in stream, open an out stream.
+     * - Pass communications to the handleResponse() method.
      */
     @Override
     public void run() {
@@ -73,6 +74,8 @@ public class Handler implements Runnable {
 
     /**
      * Handle to model instance returned by the client.
+     * - Determine to which sub instance it belongs to.
+     * - Fire an appropriate handler according to it's type.
      *
      * @param model Model instance returned from a client.
      */
@@ -88,15 +91,22 @@ public class Handler implements Runnable {
             new ExpenseHandler((Expense) model, out, logs);
         else if (model instanceof Wage)
             new WageHandler((Wage) model, out, logs);
+        else if (model instanceof Item)
+            new ItemHandler((Item) model, out, logs);
     }
 
     /**
-     * Listen for store updates and notify the associated clients.
+     * Fires off collection listeners in order to notify
+     * connected clients that data has changed.
      */
     private void listen() {
 
         adapter = new EventsAdapter() {
 
+            /**
+             * Collect orders
+             * @param order Order instance
+             */
             @Override
             public void ordersUpdated(Order order) {
 
@@ -104,6 +114,10 @@ public class Handler implements Runnable {
                 new OrderHandler(order, out, logs);
             }
 
+            /**
+             * Collect expenses.
+             * @param expense Expense instance
+             */
             @Override
             public void expensesUpdated(Expense expense) {
 
@@ -111,11 +125,26 @@ public class Handler implements Runnable {
                 new ExpenseHandler(expense, out, logs);
             }
 
+            /**
+             * Collect wages.
+             * @param wage Wage instance
+             */
             @Override
             public void wageUpdated(Wage wage) {
 
                 wage.action = "GET";
                 new WageHandler(wage, out, logs);
+            }
+
+            /**
+             * Collect items.
+             * @param item Item instance
+             */
+            @Override
+            public void itemsUpdated(Item item) {
+
+                item.action = "GET";
+                new ItemHandler(item, out, logs);
             }
         };
     }

@@ -6,11 +6,13 @@
 
 package coms;
 
-import models.Expense;
-import models.Order;
-import models.User;
-import models.Wage;
+import models.*;
 
+/**
+ * A collection of events that can be
+ * Overridden and listened to by any
+ * component class.
+ */
 public interface Events {
 
     /**
@@ -42,4 +44,16 @@ public interface Events {
      * @param wage Wage instance returned by the server.
      */
     public void wageUpdated(Wage wage);
+
+    /**
+     * Fired when items are fetched from the database.
+     * @param item Item instance returned by the server.
+     */
+    public void itemsUpdated(Item item);
+
+    /**
+     * Fired when items are fetched from the database.
+     * @param order Order instance returned by the server.
+     */
+    public void orderedItemsUpdated(Order order);
 }

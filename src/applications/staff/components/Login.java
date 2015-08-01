@@ -6,6 +6,7 @@
 
 package applications.staff.components;
 
+import applications.notify.Notify;
 import applications.staff.Staff;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
@@ -39,12 +40,20 @@ public final class Login extends JComponent {
         setLayout(new GridBagLayout());
 
         login = new Button("LOGIN", null);
-        email = new TextField();
-        password = new PasswordField();
+        email = new TextField("Email");
+        password = new PasswordField("Password");
         label = new Label("");
 
         login.addActionListener(new ActionListener() {
 
+            /**
+             * Run validation on the user input
+             *
+             * - Set this User instance's action to AUTH
+             * and write the instance to the stream.
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!email.getText().equals(""))
@@ -54,16 +63,27 @@ public final class Login extends JComponent {
                         User.password = password.getText();
                         User.userType = 0;
                         Staff.Socket.out(User);
+                    } else {
+                        new Notify("Please fill in all the fields");
                     }
+                else
+                    new Notify("Please fill in all the fields");
             }
         });
 
         new EventsAdapter() {
 
+            /**
+             * Swap the UI if the AUTH process was successful.
+             * @param user User instance returned by the server
+             */
             @Override
             public void auth(User user) {
 
-                Staff.manager.setVisible(true);
+                if (user.authorized)
+                    Staff.manager.setVisible(true);
+                else
+                    new Notify(user.error);
             }
         };
 

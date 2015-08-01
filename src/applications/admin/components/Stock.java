@@ -7,17 +7,17 @@
 package applications.admin.components;
 
 import applications.admin.Admin;
-import applications.admin.subframes.AddExpense;
-import applications.admin.subframes.EditExpense;
-import applications.admin.subframes.ViewExpense;
+import applications.admin.subframes.AddItem;
+import applications.admin.subframes.EditItem;
+import applications.admin.subframes.ViewItem;
+import applications.resources.components.*;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
 import applications.resources.components.List;
 import applications.resources.components.ScrollPane;
-import coms.Dispatcher;
 import coms.EventsAdapter;
 import helpers.Debug;
-import models.Expense;
+import models.Item;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,26 +25,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public final class Expenses extends JComponent {
+public class Stock extends JComponent {
 
     Label label;
+    Button edit, view, add, remove, back;
+
     List list;
     ScrollPane scroll;
-    Button add, edit, remove, back, view;
 
-    Expense result;
+    Item result;
 
-    ArrayList<String> expenses = new ArrayList<>();
-    public static Expense Expense = new Expense();
+    ArrayList<String> items = new ArrayList<>();
+
+    Debug debug = new Debug();
+    public static Item Item = new Item();
 
     /**
      * Instantiate new components and add action listeners to them
      */
-    public Expenses() {
+    public Stock() {
 
         setLayout(new GridBagLayout());
 
-        label = new Label("Orders");
+        label = new Label("Stock");
 
         list = new List();
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -52,11 +55,11 @@ public final class Expenses extends JComponent {
         list.setVisibleRowCount(-1);
         scroll = new ScrollPane(list);
 
-        add = new Button("ADD", 14);
-        edit = new Button("EDIT", 14);
-        remove = new Button("REMOVE", 14);
-        back = new Button("BACK", 14);
-        view = new Button("VIEW", 14);
+        edit = new Button("EDIT", 15);
+        view = new Button("VIEW", 15);
+        add = new Button("ADD", 15);
+        remove = new Button("REMOVE", 15);
+        back = new Button("BACK", 15);
 
         back.addActionListener(new ActionListener() {
 
@@ -67,7 +70,7 @@ public final class Expenses extends JComponent {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                Admin.frame.setSize(450, 350);
+                Admin.frame.setSize(450, 400);
                 Admin.home.setVisible(true);
             }
         });
@@ -75,31 +78,30 @@ public final class Expenses extends JComponent {
         add.addActionListener(new ActionListener() {
 
             /**
-             * Launch AddExpense Frame
+             * Launch the AddItem Frame
              *
              * @param e Action click
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddExpense addExpense = new AddExpense();
+                AddItem addItem = new AddItem();
             }
         });
 
-        edit.addActionListener(new ActionListener() {
+        remove.addActionListener(new ActionListener() {
 
             /**
-             * Launch the EditExpense Frame
+             * If there is an item selected, write a
+             * DELETE actioned instance to the stream
              *
              * @param e Action click
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (list.getSelectedValue() != null) {
-                    for (Expense expense : result.expenses) {
-                        if (expense.name.equals(list.getSelectedValue().toString()))
-                            new EditExpense(expense);
-                    }
+                    Item.action = "DELETE";
+                    Item.name = list.getSelectedValue().toString();
+                    Admin.Socket.out(Item);
                 }
             }
         });
@@ -107,36 +109,35 @@ public final class Expenses extends JComponent {
         view.addActionListener(new ActionListener() {
 
             /**
-             * Launch the ViewExpense Frame
+             * Launch the ViewItem Frame
              *
              * @param e Action click
              */
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (list.getSelectedValue() != null) {
-                    for (Expense expense : result.expenses) {
-                        if (expense.name.equals(list.getSelectedValue().toString()))
-                            new ViewExpense(expense);
+                    for (Item item : result.items) {
+                        if (item.name.equals(list.getSelectedValue().toString()))
+                            new ViewItem(item);
                     }
                 }
             }
         });
 
-        remove.addActionListener(new ActionListener() {
+        edit.addActionListener(new ActionListener() {
 
             /**
-             * Set the Expense instance's action to DELETE and
-             * write the instance to the stream.
+             * launch the EditItem Frame
              *
-             * @param e Action click
+             * @param e Action action
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 if (list.getSelectedValue() != null) {
-                    Expense.action = "DELETE";
-                    Expense.name = list.getSelectedValue().toString();
-                    Admin.Socket.out(Expense);
+                    for (Item item : result.items) {
+                        if (item.name.equals(list.getSelectedValue().toString()))
+                            new EditItem(item);
+                    }
                 }
             }
         });
@@ -144,28 +145,28 @@ public final class Expenses extends JComponent {
         new EventsAdapter() {
 
             /**
-             * If the parent component is connected,
-             * get all Expenses from the database
+             * If the parent component is connected, fetch all the items
+             * in the database.
              */
             @Override
             public void connected() {
-                Expense.action = "GET";
-                Admin.Socket.out(Expense);
+                Item.action = "GET";
+                Admin.Socket.out(Item);
             }
 
             /**
-             * When an expense changes, update the list component
-             * with the new expenses.
+             * When an item in the database changes, update the list
+             * component with the new items.
              *
-             * @param expense Expense instance returned by the server.
+             * @param item Item instance returned by the server.
              */
             @Override
-            public void expensesUpdated(Expense expense) {
-                result = expense;
-                expenses = new ArrayList<>();
-                for (Expense e : expense.expenses)
-                    expenses.add(e.name);
-                list.setListData(expenses.toArray());
+            public void itemsUpdated(Item item) {
+                result = item;
+                items = new ArrayList<>();
+                for (Item i : item.items)
+                    items.add(i.name);
+                list.setListData(items.toArray());
             }
         };
 
@@ -202,10 +203,10 @@ public final class Expenses extends JComponent {
         constraint.insets = new Insets(0, 0, 10, 300);
         add(add, constraint);
         constraint.insets = new Insets(0, 0, 10, 100);
-        add(edit, constraint);
-        constraint.insets = new Insets(0, 100, 10, 0);
         add(view, constraint);
-        constraint.insets = new Insets(0, 300, 10, 0);
+        constraint.insets = new Insets(0, 100, 10, 0);
         add(remove, constraint);
+        constraint.insets = new Insets(0, 300, 10, 0);
+        add(edit, constraint);
     }
 }

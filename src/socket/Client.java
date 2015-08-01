@@ -13,6 +13,9 @@ import models.*;
 import java.io.*;
 import java.net.*;
 
+/**
+ * A client socket that is shared between all parent applications.
+ */
 public class Client {
 
     ObjectInputStream in;
@@ -21,6 +24,10 @@ public class Client {
 
     /**
      * Connect to a local socket server and start IO streams
+     * <p>
+     * - On connection loss, attempt to reconnect every *3* seconds
+     * <p>
+     * - Only drastic write fails will shut down a connection permanently
      *
      * @param port Port to connect to
      */
@@ -61,7 +68,9 @@ public class Client {
     }
 
     /**
-     * Write a specified model to the server.
+     * Publicly available write point which allows
+     * all child components to write to the server through
+     * it's Parent.
      *
      * @param model Instance of model
      */
@@ -78,20 +87,24 @@ public class Client {
     }
 
     /**
-     * Handle the model response from the server.
+     * Handle to model instance returned by the server.
+     * - Determine to which sub instance it belongs to.
+     * - Fire the appropriate dispatch call
      *
-     * @param model Model instance returned by server.
+     * @param model Model instance returned from a client.
      */
     private void handleResponse(Object model) {
 
         if (model instanceof User)
             ((User) model).dispatch();
         else if (model instanceof Order)
-            ((Order) model).dispatch();
+            ((Order) model).dispatch(((Order) model).action);
         else if (model instanceof Expense)
             ((Expense) model).dispatch();
         else if (model instanceof Wage)
             ((Wage) model).dispatch();
+        else if (model instanceof Item)
+            ((Item) model).dispatch();
     }
 
     public void main(String[] args) throws InterruptedException {

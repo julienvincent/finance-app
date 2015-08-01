@@ -7,31 +7,30 @@
 package applications.admin.subframes;
 
 import applications.admin.Admin;
-import applications.admin.components.Expenses;
-import applications.admin.components.Wages;
-import applications.notify.Notify;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
-import applications.resources.components.TextField;
+import models.Item;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EditWage {
+public class ViewItem {
 
     public static JFrame frame;
 
     /**
-     * Start a new frame to edit a wage.
+     * Start a new Frame to view a specific item
+     *
+     * @param item Item instance
      */
-    public EditWage() {
+    public ViewItem(Item item) {
 
         super();
 
         frame = new JFrame();
-        Pane pane = new Pane();
+        Pane pane = new Pane(item);
 
         frame.setSize(450, 300);
         frame.setLocationRelativeTo(null);
@@ -43,64 +42,35 @@ public class EditWage {
 
     public final class Pane extends JComponent {
 
-        Label label;
-        Button change, cancel;
-        TextField wage;
+        Label label, name, buyPrice, sellPrice, amount;
+        Button close;
 
         /**
          * Instantiate new components and add action listeners to them
          */
-        public Pane() {
+        public Pane(Item item) {
 
             setLayout(new GridBagLayout());
 
-            label = new Label("Change the Wage");
+            label = new Label("View order");
 
-            wage = new TextField("New Wage");
+            name = new Label("Order name: " + item.name);
+            buyPrice = new Label("Item buy price: " + item.buyPrice);
+            sellPrice = new Label("Item sell price: " + item.sellPrice);
+            amount = new Label("Current item stock: " + item.stock);
 
-            change = new Button("CHANGE", 14);
-            cancel = new Button("CANCEL", 14);
+            close = new Button("CLOSE", 14);
 
-            cancel.addActionListener(new ActionListener() {
+            close.addActionListener(new ActionListener() {
 
                 /**
                  * Close the Frame
                  *
-                 * @param e Action click
+                 * @param e Action clieck
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose();
-                }
-            });
-
-            change.addActionListener(new ActionListener() {
-
-                /**
-                 * If all fields are filled in, and
-                 * the parent application is connected
-                 * to the socket server, set the
-                 * Wage instance to the user input and
-                 * write it to the stream
-                 *
-                 * Close the Frame
-                 *
-                 * @param e Action click
-                 */
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    if (!wage.getText().equals(""))
-                        if (Admin.connected) {
-                            Wages.Wage.action = "UPDATE";
-                            Wages.Wage.newWage = Double.parseDouble(wage.getText());
-                            Admin.Socket.out(Wages.Wage);
-
-                            frame.dispose();
-                        } else
-                            new Notify("The socket server isn't running... Please start it and try again.");
-                    else
-                        new Notify("Please fill in the wage field.");
                 }
             });
 
@@ -124,15 +94,23 @@ public class EditWage {
 
             constraint.insets = new Insets(0, 0, 10, 0);
             constraint.ipadx = 250;
-            constraint.gridy = 1;
-            add(wage, constraint);
 
-            constraint.ipadx = 0;
-            constraint.insets = new Insets(0, 0, 30, 100);
+            constraint.gridy = 1;
+            add(name, constraint);
+
+            constraint.gridy = 2;
+            add(sellPrice, constraint);
+
             constraint.gridy = 3;
-            add(change, constraint);
-            constraint.insets = new Insets(0, 100, 30, 0);
-            add(cancel, constraint);
+            add(buyPrice, constraint);
+
+            constraint.gridy = 4;
+            add(amount, constraint);
+
+            constraint.gridy = 5;
+            constraint.ipadx = 0;
+            constraint.ipady = 0;
+            add(close, constraint);
         }
 
         /**

@@ -13,6 +13,9 @@ import models.Order;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+/**
+ * Handle Order actions.
+ */
 public class OrderHandler {
 
     Order order;
@@ -22,7 +25,8 @@ public class OrderHandler {
     Debug debug = new Debug();
 
     /**
-     * Determine what the Model wants to do.
+     * Determine what the Model wants to do and
+     * fire the appropriate action.
      *
      * @param order Order instance
      * @param out   Socket Server out stream
@@ -47,11 +51,15 @@ public class OrderHandler {
             case "COMPLETE":
                 complete();
                 break;
+            case "ITEMS":
+                getOrderedItems();
+                break;
         }
     }
 
     /**
      * Call the create method within Orders.
+     * If Order returns successfully, write the response to the stream.
      */
     private void create() {
         try {
@@ -66,6 +74,7 @@ public class OrderHandler {
 
     /**
      * Call the getAll method within Orders.
+     * If Order returns successfully, write the response to the stream.
      */
     private void get() {
 
@@ -79,7 +88,11 @@ public class OrderHandler {
         }
     }
 
-    public void complete() {
+    /**
+     * Call the complete method within Orders.
+     * If Order returns successfully, write the response to the stream.
+     */
+    private void complete() {
 
         try {
             if (order.complete()) {
@@ -91,10 +104,32 @@ public class OrderHandler {
         }
     }
 
-    public void cancel() {
+    /**
+     * Call the cancel method within Orders.
+     * If Order returns successfully, write the response to the stream.
+     */
+    private void cancel() {
 
         try {
             if (order.cancel()) {
+                out.writeObject(order);
+                debug.debug("Sent serialized object to client. [" + order.model + "]", logs);
+            }
+        } catch (IOException e) {
+            debug.debug("Couldn't write object", "ERROR", logs);
+        }
+    }
+
+    /**
+     * Call the getOrderedItems method within Orders.
+     * If Order returns successfully, write the response to the stream.
+     */
+    private void getOrderedItems() {
+
+        System.out.println("order handler");
+
+        try {
+            if (order.getOrderedItems()) {
                 out.writeObject(order);
                 debug.debug("Sent serialized object to client. [" + order.model + "]", logs);
             }

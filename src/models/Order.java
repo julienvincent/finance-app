@@ -6,7 +6,6 @@
 
 package models;
 
-import com.sun.deploy.Environment;
 import coms.Dispatcher;
 import database.Query;
 import helpers.Debug;
@@ -18,18 +17,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * Order model for mutations
+ */
 public class Order extends Model {
 
     ResultSet result;
 
+    public Integer id;
     public String code;
-    public Integer userId;
     public Boolean completed = false;
     public Boolean canceled = false;
     public Integer itemId;
     public Integer amount;
 
-    public ArrayList<String> orders = new ArrayList<>();
+    public ArrayList<Order> orders = new ArrayList<>();
+    public ArrayList<String> items = new ArrayList<>();
 
     /**
      * Set the classes Identifier type-hint
@@ -42,9 +45,16 @@ public class Order extends Model {
     /**
      * Notify all listening Components that there are new orders.
      */
-    public void dispatch() {
+    @Override
+    public void dispatch(String action) {
 
-        Dispatcher.ordersUpdated(this);
+        if (action != null)
+            if (action.equals("ITEMS"))
+                Dispatcher.orderedItemsUpdated(this);
+            else
+                Dispatcher.ordersUpdated(this);
+        else
+            Dispatcher.ordersUpdated(this);
     }
 
     /**
@@ -57,10 +67,9 @@ public class Order extends Model {
         code = new BigInteger(130, new SecureRandom()).toString(32).substring(0, 10);
 
         new Query().query("INSERT INTO orders (" +
-                "code, user_id, completed, canceled) " +
+                "code, completed, canceled) " +
                 "VALUES ('" +
                 code + "', " +
-                userId + ", " +
                 completed + ", " +
                 canceled + ")");
 
@@ -71,13 +80,14 @@ public class Order extends Model {
                 itemId + ", " +
                 amount + ")");
 
-        dispatch();
+        dispatch(this.action);
 
         return true;
     }
 
     /**
      * Fetch all orders from the database and return them to the requesting client.
+     *
      * @return Boolean was successful.
      */
     public Boolean getAll() {
@@ -88,8 +98,12 @@ public class Order extends Model {
         try {
             while (result.next())
                 if (!result.getBoolean("canceled"))
-                    if (!result.getBoolean("completed"))
-                        orders.add(result.getString("code"));
+                    if (!result.getBoolean("completed")) {
+                        Order order = new Order();
+                        order.id = result.getInt("id");
+                        order.code = result.getString("code");
+                        orders.add(order);
+                    }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -121,5 +135,36 @@ public class Order extends Model {
         new Query().query("UPDATE orders SET completed=true WHERE code = '" + code + "'");
 
         return getAll();
+    }
+
+    /**
+     * Get all ordered items for a specified order.
+     * - Dispatches
+     *
+     * @return Boolean was successful
+     */
+    public Boolean getOrderedItems() {
+
+        System.out.println("within order");
+
+        result = new Query().query("SELECT * FROM ordered_items WHERE order_code = '" + code + "'");
+
+        try {
+            while (result.next()) {
+                ResultSet itemSet = new Query().query("SELECT * FROM items WHERE id = " + result.getInt("item_id"));
+                while (itemSet.next()) {
+                    items.add("Item: " + itemSet.getString("name") + ", Amount: " + result.getInt("amount"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        dispatch(this.action);
+
+        result = null;
+
+        return true;
     }
 }

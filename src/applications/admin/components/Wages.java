@@ -42,6 +42,12 @@ public class Wages extends JComponent {
         back = new Button("BACK", 15);
 
         back.addActionListener(new ActionListener() {
+
+            /**
+             * Return back home
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 Admin.frame.setSize(450, 400);
@@ -50,6 +56,12 @@ public class Wages extends JComponent {
         });
 
         change.addActionListener(new ActionListener() {
+
+            /**
+             * launch the EditWage Frame.
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditWage editWage = new EditWage();
@@ -58,12 +70,21 @@ public class Wages extends JComponent {
 
         new EventsAdapter() {
 
+            /**
+             * Once the admin application connects, get the current wage
+             */
             @Override
             public void connected() {
                 Wage.action = "GET";
                 Admin.Socket.out(Wage);
             }
 
+            /**
+             * If the wages was changes, update the Label component
+             * with the new wage.
+             *
+             * @param wages Wage instance returned by the server.
+             */
             @Override
             public void wageUpdated(Wage wages) {
 

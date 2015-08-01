@@ -8,6 +8,10 @@ package applications.resources;
 
 import socket.Client;
 
+/**
+ * Shared socket connection to be
+ * run on a new thread for each application
+ */
 public class Socket implements Runnable {
 
     static Client connection;

@@ -6,12 +6,8 @@
 
 package applications.admin.subframes;
 
-import applications.admin.Admin;
-import applications.admin.components.Expenses;
-import applications.notify.Notify;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
-import applications.resources.components.TextField;
 import models.Expense;
 
 import javax.swing.*;
@@ -19,16 +15,16 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EditExpense {
+public class ViewExpense {
 
     public static JFrame frame;
 
     /**
-     * Start a new frame to edit the selected Expense.
+     * Start a new Frame to view a selected expense
      *
      * @param expense Expense instance
      */
-    public EditExpense(Expense expense) {
+    public ViewExpense(Expense expense) {
 
         super();
 
@@ -45,9 +41,8 @@ public class EditExpense {
 
     public final class Pane extends JComponent {
 
-        Label label;
-        Button edit, cancel;
-        TextField amount;
+        Label label, name, amount;
+        Button close;
 
         /**
          * Instantiate new components and add action listeners to them
@@ -56,54 +51,23 @@ public class EditExpense {
 
             setLayout(new GridBagLayout());
 
-            label = new Label("Edit an Expense");
+            label = new Label("View Expense");
 
-            amount = new TextField("Amount (" + expense.amount + ")");
+            name = new Label("Expense name: " + expense.name);
+            amount = new Label("Current expense amount: " + expense.amount);
 
-            edit = new Button("ADD", 14);
-            cancel = new Button("CANCEL", 14);
+            close = new Button("CLOSE", 14);
 
-            cancel.addActionListener(new ActionListener() {
+            close.addActionListener(new ActionListener() {
 
                 /**
-                 * Close the Frame.
+                 * Close the Frame
                  *
                  * @param e Action click
                  */
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame.dispose();
-                }
-            });
-
-            edit.addActionListener(new ActionListener() {
-
-                /**
-                 * If validation was successful, update
-                 * the item instance with the users input
-                 * and write the instance to the stream.
-                 *
-                 * @param e Action click
-                 */
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    Boolean run = true;
-                    if (!amount.getText().isEmpty())
-                        if (amount.getText().matches("[0-9]+"))
-                            expense.amount = Integer.parseInt(amount.getText());
-                        else {
-                            new Notify("Amount must be an integer");
-                            run = false;
-                        }
-                    if (run)
-                        if (Admin.connected) {
-                            expense.action = "EDIT";
-                            Admin.Socket.out(expense);
-
-                            frame.dispose();
-                        } else
-                            new Notify("The socket server isn't running... Please start it and try again.");
                 }
             });
 
@@ -127,15 +91,17 @@ public class EditExpense {
 
             constraint.insets = new Insets(0, 0, 10, 0);
             constraint.ipadx = 250;
-            constraint.gridy = 2;
+
+            constraint.gridy = 1;
+            add(name, constraint);
+
+            constraint.gridy = 4;
             add(amount, constraint);
 
+            constraint.gridy = 5;
             constraint.ipadx = 0;
-            constraint.insets = new Insets(0, 0, 30, 100);
-            constraint.gridy = 3;
-            add(edit, constraint);
-            constraint.insets = new Insets(0, 100, 30, 0);
-            add(cancel, constraint);
+            constraint.ipady = 0;
+            add(close, constraint);
         }
 
         /**

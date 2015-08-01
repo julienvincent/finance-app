@@ -9,8 +9,17 @@ package applications.resources.components;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Custom swing JButton extension.
+ */
 public class Button extends JButton {
 
+    /**
+     * Set the font and text of the button.
+     *
+     * @param label Text to draw within the Button.
+     * @param font  Font size to draw.
+     */
     public Button(String label, Integer font) {
 
         super(label);
@@ -19,6 +28,9 @@ public class Button extends JButton {
         setName(label);
     }
 
+    /**
+     * @param g Graphics component passed by super JButton
+     */
     @Override
     protected void paintComponent(Graphics g) {
 

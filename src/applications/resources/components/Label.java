@@ -9,8 +9,16 @@ package applications.resources.components;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Custom swing JLabel.
+ */
 public class Label extends JLabel {
 
+    /**
+     * Set the font and text of the label.
+     *
+     * @param label Text to write within the label
+     */
     public Label(String label) {
 
         super(label);
@@ -20,6 +28,11 @@ public class Label extends JLabel {
         repaint();
     }
 
+    /**
+     * Draw a custom swing JLabel
+     *
+     * @param g Graphics components passed by super.
+     */
     @Override
     protected void paintComponent(Graphics g) {
 

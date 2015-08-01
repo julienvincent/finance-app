@@ -6,6 +6,7 @@
 
 package applications.staff.components;
 
+import applications.notify.Notify;
 import applications.resources.components.Button;
 import applications.resources.components.Label;
 import applications.resources.components.List;
@@ -26,12 +27,14 @@ public final class OrderManager extends JComponent {
     Label label;
     List list;
     ScrollPane scroll;
-    Button complete, cancel;
+    Button complete, cancel, view;
+
+    Boolean connected = false;
 
     ArrayList<String> orders = new ArrayList<>();
     Order Order = new Order();
+    Order result;
     Debug debug = new Debug();
-    EventsAdapter adapter;
 
     /**
      * Instantiate new components and add action listeners to them
@@ -50,8 +53,18 @@ public final class OrderManager extends JComponent {
 
         complete = new Button("COMPLETE", 14);
         cancel = new Button("CANCEL", 14);
+        view = new Button("VIEW", 14);
 
         complete.addActionListener(new ActionListener() {
+
+            /**
+             * Determine if there is a selected order.
+             *
+             * - Set this Orders instance's action to COMPLETE
+             * and write the instance to the stream.
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (list.getSelectedValue() != null) {
@@ -63,6 +76,15 @@ public final class OrderManager extends JComponent {
         });
 
         cancel.addActionListener(new ActionListener() {
+
+            /**
+             * Determine if there is a selected order
+             *
+             * - Set this Orders instance's action to CANCEL
+             * and write the instance to the stream.
+             *
+             * @param e Action click
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (list.getSelectedValue() != null) {
@@ -73,10 +95,32 @@ public final class OrderManager extends JComponent {
             }
         });
 
-        adapter = new EventsAdapter() {
+        view.addActionListener(new ActionListener() {
+
+            /**
+             * Determine if there is a selected order
+             *
+             * - Launch a new Frame and pass in an instance
+             * of the selected order.
+             *
+             * @param e Action
+             */
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (list.getSelectedValue() != null) {
+                    for (Order order : result.orders) {
+                        if (order.code == list.getSelectedValue().toString())
+                            new ViewOrder(order);
+                    }
+                }
+            }
+        });
+
+        new EventsAdapter() {
 
             @Override
             public void connected() {
+                connected = true;
                 Order.action = "GET";
                 Staff.Socket.out(Order);
             }
@@ -84,8 +128,10 @@ public final class OrderManager extends JComponent {
             @Override
             public void ordersUpdated(Order order) {
 
+                result = order;
                 orders = new ArrayList<>();
-                orders.addAll(order.orders);
+                for (Order o : order.orders)
+                    orders.add(o.code);
                 list.setListData(orders.toArray());
             }
         };
@@ -117,14 +163,17 @@ public final class OrderManager extends JComponent {
         add(scroll, constraint);
 
         constraint.anchor = GridBagConstraints.BASELINE;
-        constraint.ipadx = 75;
-        constraint.ipady = 15;
+        constraint.ipadx = 0;
+        constraint.ipady = 0;
         constraint.gridy = 2;
         constraint.weightx = 2;
-        constraint.insets = new Insets(0, 0, 10, 200);
+        constraint.insets = new Insets(0, 0, 10, 300);
         add(complete, constraint);
 
-        constraint.insets = new Insets(0, 200, 10, 0);
+        constraint.insets = new Insets(0, 0, 10, 0);
+        add(view, constraint);
+
+        constraint.insets = new Insets(0, 300, 10, 0);
         add(cancel, constraint);
     }
 }

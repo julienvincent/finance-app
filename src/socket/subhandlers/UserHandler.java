@@ -13,6 +13,9 @@ import models.User;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+/**
+ * Handle User actions.
+ */
 public class UserHandler {
 
     User user;
@@ -22,7 +25,8 @@ public class UserHandler {
     Debug debug = new Debug();
 
     /**
-     * Determine what the Model instance wants to do.
+     * Determine what the Model instance wants to do and
+     * fire the appropriate action.
      *
      * @param user User instance
      * @param out  Socket Server out stream
@@ -34,12 +38,19 @@ public class UserHandler {
         this.logs = logs;
         this.out = out;
 
-        if (user.action.equals("AUTH"))
-            auth();
+        switch (user.action) {
+            case "AUTH":
+                auth();
+                break;
+            case "CREATE":
+                create();
+                break;
+        }
     }
 
     /**
      * Call the auth method within User.
+     * If User returns successfully, write the response to the stream.
      */
     private void auth() {
         try {
@@ -48,6 +59,25 @@ public class UserHandler {
                 out.writeObject(user);
             } else {
                 debug.debug("server: UNAUTHORIZED", "ERROR", logs);
+                out.writeObject(user);
+            }
+        } catch (IOException e) {
+            debug.debug("Couldn't write object", "ERROR", logs);
+        }
+        debug.debug("Sent serialized object to client. [" + user.model + "]", logs);
+    }
+
+    /**
+     * Call the create method within User.
+     * If User returns successfully, write the response to the stream.
+     */
+    private void create() {
+        try {
+            if (user.create()) {
+                debug.debug("server: CREATED USER", "BLUE", logs);
+                out.writeObject(user);
+            } else {
+                debug.debug("server: FAILED TO CREATE USER", "ERROR", logs);
                 out.writeObject(user);
             }
         } catch (IOException e) {

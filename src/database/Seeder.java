@@ -11,6 +11,9 @@ import models.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Seeder class for testing.
+ */
 public class Seeder {
 
     /**
@@ -45,8 +48,8 @@ public class Seeder {
 
         Item item = new Item();
         item.name = "pizza";
-        item.sellPrice = 10000;
-        item.buyPrice = 5000;
+        item.sellPrice = 100.0;
+        item.buyPrice = 500.0;
         item.stock = 70;
         item.create();
     }
@@ -57,7 +60,6 @@ public class Seeder {
     private void order() {
 
         Order order = new Order();
-        order.userId = 1;
         order.completed = false;
         order.canceled = false;
         order.itemId = 1;

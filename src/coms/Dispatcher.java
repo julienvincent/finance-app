@@ -1,19 +1,21 @@
 package coms;
 
 import helpers.Debug;
-import models.Expense;
-import models.Order;
-import models.User;
-import models.Wage;
+import models.*;
 
 import java.util.ArrayList;
 
+/**
+ * A dispatcher that stores instances of
+ * any component that called the adapter
+ * of this triad.
+ */
 public class Dispatcher {
 
     private static ArrayList<Events> events = new ArrayList<>();
 
     /**
-     * Register a class instance as a callback.
+     * Register a class instance as a callback or listener.
      *
      * @param obj An instance of the listening Component.
      */
@@ -59,7 +61,7 @@ public class Dispatcher {
     }
 
     /**
-     * Trigger all implementations of wagesUpdated and pass the Expense instance.
+     * Trigger all implementations of wageUpdated and pass the Expense instance.
      *
      * @param wage Wage instance that was returned by the server.
      */
@@ -67,5 +69,25 @@ public class Dispatcher {
         if (events.size() > 0)
             for (Events event : events)
                 event.wageUpdated(wage);
+    }
+
+    /**
+     * Trigger all implementations of itemsUpdated and pass the Expense instance.
+     *
+     * @param item Wage instance that was returned by the server.
+     */
+    public static void itemsUpdated(Item item) {
+        if (events.size() > 0)
+            for (Events event : events)
+                event.itemsUpdated(item);
+    }
+
+    /**
+     * @param order Order instance that was returned by the server
+     */
+    public static void orderedItemsUpdated(Order order) {
+        if (events.size() > 0)
+            for (Events event : events)
+                event.orderedItemsUpdated(order);
     }
 }

@@ -13,6 +13,9 @@ import helpers.Debug;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Wage model for mutations
+ */
 public class Wage extends Model {
 
     ResultSet result;
@@ -31,6 +34,7 @@ public class Wage extends Model {
     /**
      * Fire the wageUpdated event to update all listening Components.
      */
+    @Override
     public void dispatch() {
 
         Dispatcher.wageUpdated(this);
@@ -38,6 +42,7 @@ public class Wage extends Model {
 
     /**
      * Get the current wage from the database.
+     *
      * @return Boolean was successful.
      */
     public boolean get() {
@@ -58,6 +63,11 @@ public class Wage extends Model {
         return true;
     }
 
+    /**
+     * Update the specified wage.
+     *
+     * @return Boolean was successful.
+     */
     public boolean update() {
 
         newWage *= 100;
