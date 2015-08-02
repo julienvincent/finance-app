@@ -24,7 +24,7 @@ public class Expense extends Model {
 
     public Integer id;
     public String name;
-    public Integer amount;
+    public Double amount;
 
     public ArrayList<Expense> expenses = new ArrayList<>();
 
@@ -52,11 +52,12 @@ public class Expense extends Model {
      */
     public Boolean create() {
 
+        amount *= 100;
         new Query().query("INSERT INTO expenses (" +
                 "name, amount) " +
                 "VALUES ('" +
                 name + "', " +
-                amount + ")");
+                amount.intValue() + ")");
 
         dispatch();
 
@@ -77,7 +78,8 @@ public class Expense extends Model {
             while (result.next()) {
                 Expense expense = new Expense();
                 expense.name = result.getString("name");
-                expense.amount = result.getInt("amount");
+                Integer temp = result.getInt("amount");
+                expense.amount = temp.doubleValue();
                 expenses.add(expense);
             }
         } catch (SQLException e) {
@@ -108,7 +110,8 @@ public class Expense extends Model {
      */
     public Boolean edit() {
 
-        new Query().query("UPDATE expenses SET amount=" + amount + " WHERE name = '" + name + "'");
+        amount *= 100;
+        new Query().query("UPDATE expenses SET amount=" + amount.intValue() + " WHERE name = '" + name + "'");
 
         return getAll();
     }

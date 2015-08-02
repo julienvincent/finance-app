@@ -96,7 +96,10 @@ public class Client {
     private void handleResponse(Object model) {
 
         if (model instanceof User)
-            ((User) model).dispatch();
+            if (((User) model).action.equals("AUTH") || ((User) model).action.equals("CREATE"))
+                ((User) model).dispatch();
+            else
+                ((User) model).dispatch("GET");
         else if (model instanceof Order)
             ((Order) model).dispatch(((Order) model).action);
         else if (model instanceof Expense)

@@ -11,6 +11,7 @@ import database.Query;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class User extends Model {
 
@@ -25,6 +26,8 @@ public class User extends Model {
     public String error;
 
     public Boolean authorized = false;
+
+    public ArrayList<User> users = new ArrayList<>();
 
     /**
      * Set the classes Identifier type-hint
@@ -41,6 +44,12 @@ public class User extends Model {
     public void dispatch() {
 
         Dispatcher.auth(this);
+    }
+
+    @Override
+    public void dispatch(String action) {
+
+        Dispatcher.usersUpdated(this);
     }
 
     /**
@@ -93,4 +102,28 @@ public class User extends Model {
 
         return authorized = true;
     }
+
+
+        public Boolean getAll() {
+
+            result = new Query().query("SELECT * FROM users");
+            users = new ArrayList<>();
+
+            try {
+                while (result.next()) {
+                    User user = new User();
+                    user.name = result.getString("name");
+                    user.surname = result.getString("surname");
+                    user.userType = result.getInt("user_type");
+                    users.add(user);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            result = null;
+
+            return true;
+        }
+
 }

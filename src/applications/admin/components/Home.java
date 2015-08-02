@@ -104,7 +104,7 @@ public final class Home extends JComponent {
              */
             @Override
             public void actionPerformed(ActionEvent e) {
-                Admin.frame.setSize(450, 400);
+                Admin.frame.setSize(300, 250);
                 Admin.statement.setVisible(true);
             }
         });

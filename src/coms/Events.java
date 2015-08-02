@@ -56,4 +56,8 @@ public interface Events {
      * @param order Order instance returned by the server.
      */
     public void orderedItemsUpdated(Order order);
+
+    public void usersUpdated(User user);
+
+    public void orderCostUpdated(Order order);
 }

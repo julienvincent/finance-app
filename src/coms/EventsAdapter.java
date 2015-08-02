@@ -32,6 +32,10 @@ public class EventsAdapter implements Events {
     }
 
     @Override
+    public void usersUpdated(User user) {
+    }
+
+    @Override
     public void ordersUpdated(Order order) {
     }
 
@@ -49,5 +53,9 @@ public class EventsAdapter implements Events {
 
     @Override
     public void orderedItemsUpdated(Order order) {
+    }
+
+    @Override
+    public void orderCostUpdated(Order order) {
     }
 }

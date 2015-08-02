@@ -54,6 +54,9 @@ public class OrderHandler {
             case "ITEMS":
                 getOrderedItems();
                 break;
+            case "ORDER_COST":
+                orderCost();
+                break;
         }
     }
 
@@ -126,10 +129,24 @@ public class OrderHandler {
      */
     private void getOrderedItems() {
 
-        System.out.println("order handler");
-
         try {
             if (order.getOrderedItems()) {
+                out.writeObject(order);
+                debug.debug("Sent serialized object to client. [" + order.model + "]", logs);
+            }
+        } catch (IOException e) {
+            debug.debug("Couldn't write object", "ERROR", logs);
+        }
+    }
+
+    /**
+     * Call the orderCost method within Orders.
+     * If Order returns successfully, write the response to the stream.
+     */
+    private void orderCost() {
+
+        try {
+            if (order.orderCost()) {
                 out.writeObject(order);
                 debug.debug("Sent serialized object to client. [" + order.model + "]", logs);
             }

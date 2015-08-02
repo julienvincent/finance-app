@@ -14,6 +14,7 @@ import helpers.Debug;
 import models.Expense;
 import models.Order;
 import models.User;
+import models.Wage;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +23,7 @@ import java.awt.event.ActionListener;
 
 public class Statement extends JComponent {
 
-    Label label;
+    Label label, moneyOut, moneyIn, profit;
     Button back;
 
     Debug debug = new Debug();
@@ -30,6 +31,9 @@ public class Statement extends JComponent {
     Expense Expenses = new Expense();
     Order Orders = new Order();
     User Users = new User();
+
+    Double totalOut = 0.0;
+    Double totalIn = 0.0;
 
     /**
      * Instantiate new components and add action listeners to them
@@ -39,6 +43,10 @@ public class Statement extends JComponent {
         setLayout(new GridBagLayout());
 
         label = new Label("Income Statement");
+        moneyOut = new Label("Loading...");
+        moneyIn = new Label("Loading...");
+        profit = new Label("Loading...");
+
 
         back = new Button("BACK", 15);
 
@@ -70,8 +78,39 @@ public class Statement extends JComponent {
                 Users.action = "GET";
                 Admin.Socket.out(Users);
 
-                Orders.action = "GET_COMPLETE";
+                Orders.action = "ORDER_COST";
                 Admin.Socket.out(Orders);
+            }
+
+            @Override
+            public void expensesUpdated(Expense expense) {
+
+                for (Expense e : expense.expenses) {
+
+                    totalOut += e.amount.doubleValue() / 100;
+                }
+                moneyOut.setText("Money Out: R " + totalOut);
+                profit.setText("Profit: R " + (totalIn - totalOut));
+            }
+
+            @Override
+            public void usersUpdated(User user) {
+
+                for (User u : user.users) {
+                    if (u.userType == 0){
+                        totalOut += Wages.wage;
+                    }
+                }
+                moneyOut.setText("Money Out: R " + totalOut);
+                profit.setText("Profit: R " + (totalIn - totalOut));
+            }
+
+            @Override
+            public void orderCostUpdated(Order order) {
+
+                totalIn += (order.orderCost.doubleValue() / 100);
+                moneyIn.setText("Money In: R " + totalIn);
+                profit.setText("Profit: R " + (totalIn - totalOut));
             }
         };
 
@@ -91,7 +130,23 @@ public class Statement extends JComponent {
         constraint.gridheight = 1;
         constraint.gridwidth = 1;
 
-        constraint.insets = new Insets(0, 0, 100, 300);
+        constraint.insets = new Insets(0, 0, 50, 150);
         add(back, constraint);
+
+        constraint.anchor = GridBagConstraints.CENTER;
+        constraint.gridy = 1;
+        constraint.insets = new Insets(0, 0, 10, 0);
+        add(label, constraint);
+
+        constraint.ipadx = 0;
+
+        constraint.gridy = 2;
+        add(moneyIn, constraint);
+
+        constraint.gridy = 3;
+        add(moneyOut, constraint);
+
+        constraint.gridy = 4;
+        add(profit, constraint);
     }
 }

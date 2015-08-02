@@ -48,8 +48,8 @@ public class Seeder {
 
         Item item = new Item();
         item.name = "pizza";
-        item.sellPrice = 100.0;
-        item.buyPrice = 500.0;
+        item.sellPrice = 200.0;
+        item.buyPrice = 100.0;
         item.stock = 70;
         item.create();
     }
@@ -74,7 +74,7 @@ public class Seeder {
 
         Expense expense = new Expense();
         expense.name = "NewExpense";
-        expense.amount = 20000;
+        expense.amount = 20.00;
         expense.create();
     }
 
@@ -84,7 +84,7 @@ public class Seeder {
     private void wage() {
 
         Wage wage = new Wage();
-        wage.newWage = 20000.0;
+        wage.newWage = 200.0;
         wage.update();
     }
 }

@@ -43,6 +43,11 @@ public class Dispatcher {
             event.auth(user);
     }
 
+    public static void usersUpdated(User user) {
+        for (Events event : events)
+            event.usersUpdated(user);
+    }
+
     public static void ordersUpdated(Order order) {
         if (events.size() > 0)
             for (Events event : events)
@@ -89,5 +94,14 @@ public class Dispatcher {
         if (events.size() > 0)
             for (Events event : events)
                 event.orderedItemsUpdated(order);
+    }
+
+    /**
+     * @param order Order instance that was returned by the server
+     */
+    public static void orderCostUpdated(Order order) {
+        if (events.size() > 0)
+            for (Events event : events)
+                event.orderCostUpdated(order);
     }
 }

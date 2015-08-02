@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 public class Wages extends JComponent {
 
     Label label, current;
-    Double wage = 0.0;
+    public static Double wage = 0.0;
     Button change, back;
 
     Debug debug = new Debug();
@@ -89,7 +89,7 @@ public class Wages extends JComponent {
             public void wageUpdated(Wage wages) {
 
                 wage = wages.wage.doubleValue() / 100;
-                current.setText("Wages are currently set at R" + wage / 100 + " per staff member.");
+                current.setText("Wages are currently set at R" + wage + " per staff member.");
             }
         };
 

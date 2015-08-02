@@ -33,7 +33,7 @@ public class Order extends Model {
 
     public ArrayList<Order> orders = new ArrayList<>();
     public ArrayList<String> items = new ArrayList<>();
-
+    public Integer orderCost = 0;
     /**
      * Set the classes Identifier type-hint
      */
@@ -51,6 +51,8 @@ public class Order extends Model {
         if (action != null)
             if (action.equals("ITEMS"))
                 Dispatcher.orderedItemsUpdated(this);
+            else if (action.equals("ORDER_COST"))
+                Dispatcher.orderCostUpdated(this);
             else
                 Dispatcher.ordersUpdated(this);
         else
@@ -145,8 +147,6 @@ public class Order extends Model {
      */
     public Boolean getOrderedItems() {
 
-        System.out.println("within order");
-
         result = new Query().query("SELECT * FROM ordered_items WHERE order_code = '" + code + "'");
 
         try {
@@ -162,6 +162,31 @@ public class Order extends Model {
         }
 
         dispatch(this.action);
+
+        result = null;
+
+        return true;
+    }
+
+    public Boolean orderCost() {
+
+        result = new Query().query("SELECT * FROM orders WHERE completed = true");
+
+        try {
+            while (result.next()) {
+                ResultSet orderedItems = new Query().query("SELECT * FROM ordered_items WHERE order_code = '" + result.getString("code") + "'");
+                while (orderedItems.next()) {
+                    new Debug().debug("amount " + orderedItems.getInt("id"));
+                    ResultSet items = new Query().query("SELECT * FROM items WHERE id = " + orderedItems.getInt("item_id"));
+                    while (items.next()) {
+                        new Debug().debug("price " + items.getInt("sell_price"));
+                        orderCost += items.getInt("sell_price") * orderedItems.getInt("amount");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         result = null;
 

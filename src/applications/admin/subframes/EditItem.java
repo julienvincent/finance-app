@@ -60,8 +60,8 @@ public class EditItem {
 
             label = new Label("Edit an Expense");
 
-            buyPrice = new TextField("Buy Price (" + item.buyPrice + ")");
-            sellPrice = new TextField("Sell Price (" + item.sellPrice + ")");
+            buyPrice = new TextField("Buy Price (" + item.buyPrice / 100 + ")");
+            sellPrice = new TextField("Sell Price (" + item.sellPrice / 100 + ")");
             stock = new TextField("amount (" + item.stock + ")");
 
             edit = new Button("EDIT", 14);

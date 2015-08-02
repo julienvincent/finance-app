@@ -52,11 +52,11 @@ public class ViewItem {
 
             setLayout(new GridBagLayout());
 
-            label = new Label("View order");
+            label = new Label("View Item");
 
-            name = new Label("Order name: " + item.name);
-            buyPrice = new Label("Item buy price: " + item.buyPrice);
-            sellPrice = new Label("Item sell price: " + item.sellPrice);
+            name = new Label("Item name: " + item.name);
+            buyPrice = new Label("Item buy price: R" + item.buyPrice / 100);
+            sellPrice = new Label("Item sell price: R" + item.sellPrice / 100);
             amount = new Label("Current item stock: " + item.stock);
 
             close = new Button("CLOSE", 14);

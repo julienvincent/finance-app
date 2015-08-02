@@ -23,8 +23,9 @@ public class Label extends JLabel {
 
         super(label);
 
-        setFont(new Font("Arial", Font.PLAIN, 14));
+        setFont(new Font("Arial", Font.PLAIN, 15));
         setName(label);
+        setForeground(new Color(255, 255, 255));
         repaint();
     }
 

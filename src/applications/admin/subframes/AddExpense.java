@@ -99,7 +99,7 @@ public class AddExpense extends UIController {
                                 if (Admin.connected) {
                                     Expenses.Expense.action = "CREATE";
                                     Expenses.Expense.name = name.getText();
-                                    Expenses.Expense.amount = Integer.parseInt(amount.getText());
+                                    Expenses.Expense.amount = Double.parseDouble(amount.getText());
                                     Admin.Socket.out(Expenses.Expense);
 
                                     frame.dispose();

@@ -90,15 +90,18 @@ public class EditWage {
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
-                    if (!wage.getText().equals(""))
-                        if (Admin.connected) {
-                            Wages.Wage.action = "UPDATE";
-                            Wages.Wage.newWage = Double.parseDouble(wage.getText());
-                            Admin.Socket.out(Wages.Wage);
+                    if (!wage.getText().isEmpty())
+                        if (wage.getText().matches("^\\d+(\\.\\d{1,2})?$"))
+                            if (Admin.connected) {
+                                Wages.Wage.action = "UPDATE";
+                                Wages.Wage.newWage = Double.parseDouble(wage.getText());
+                                Admin.Socket.out(Wages.Wage);
 
-                            frame.dispose();
-                        } else
-                            new Notify("The socket server isn't running... Please start it and try again.");
+                                frame.dispose();
+                            } else
+                                new Notify("The socket server isn't running... Please start it and try again.");
+                        else
+                            new Notify("Please make sure the wage is an integer");
                     else
                         new Notify("Please fill in the wage field.");
                 }

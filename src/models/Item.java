@@ -82,8 +82,8 @@ public class Item extends Model {
                 item.name = result.getString("name");
                 Integer sellTemp = result.getInt("sell_price");
                 Integer buyTemp = result.getInt("buy_price");
-                item.sellPrice = sellTemp.doubleValue() * 100;
-                item.buyPrice = buyTemp.doubleValue() * 100;
+                item.sellPrice = sellTemp.doubleValue();
+                item.buyPrice = buyTemp.doubleValue();
                 item.stock = result.getInt("stock");
                 items.add(item);
             }
@@ -115,8 +115,10 @@ public class Item extends Model {
      */
     public Boolean edit() {
 
-        new Query().query("UPDATE items SET sell_price=" + sellPrice + ", " +
-                "buy_price=" + buyPrice + ", " +
+        sellPrice *= 100;
+        buyPrice *= 100;
+        new Query().query("UPDATE items SET sell_price=" + sellPrice.intValue() + ", " +
+                "buy_price=" + buyPrice.intValue() + ", " +
                 "stock=" + stock + " WHERE name = '" + name + "'");
 
         return getAll();

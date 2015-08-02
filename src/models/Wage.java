@@ -74,7 +74,7 @@ public class Wage extends Model {
         get();
 
         if (wage != null)
-            new Query().query("UPDATE wages SET wage=" + newWage * 100 + " WHERE id = 1");
+            new Query().query("UPDATE wages SET wage=" + newWage.intValue() + " WHERE id = 1");
         else
             new Query().query("INSERT INTO wages (wage) VALUES " + newWage.intValue());
 

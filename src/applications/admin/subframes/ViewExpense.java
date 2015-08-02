@@ -54,7 +54,7 @@ public class ViewExpense {
             label = new Label("View Expense");
 
             name = new Label("Expense name: " + expense.name);
-            amount = new Label("Current expense amount: " + expense.amount);
+            amount = new Label("Current expense amount: R" + expense.amount / 100);
 
             close = new Button("CLOSE", 14);
 
@@ -90,7 +90,7 @@ public class ViewExpense {
             add(label, constraint);
 
             constraint.insets = new Insets(0, 0, 10, 0);
-            constraint.ipadx = 250;
+            constraint.ipadx = 0;
 
             constraint.gridy = 1;
             add(name, constraint);

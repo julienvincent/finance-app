@@ -45,6 +45,9 @@ public class UserHandler {
             case "CREATE":
                 create();
                 break;
+            case "GET":
+                get();
+                break;
         }
     }
 
@@ -84,5 +87,17 @@ public class UserHandler {
             debug.debug("Couldn't write object", "ERROR", logs);
         }
         debug.debug("Sent serialized object to client. [" + user.model + "]", logs);
+    }
+
+    private void get() {
+
+        try {
+            if (user.getAll()) {
+                out.writeObject(user);
+                debug.debug("Sent serialized object to client. [" + user.model + "]", logs);
+            }
+        } catch (IOException e) {
+            debug.debug("Couldn't write object", "ERROR", logs);
+        }
     }
 }

@@ -58,9 +58,9 @@ public class EditExpense {
 
             label = new Label("Edit an Expense");
 
-            amount = new TextField("Amount (" + expense.amount + ")");
+            amount = new TextField("Amount (" + expense.amount / 100 + ")");
 
-            edit = new Button("ADD", 14);
+            edit = new Button("EDIT", 14);
             cancel = new Button("CANCEL", 14);
 
             cancel.addActionListener(new ActionListener() {
@@ -91,7 +91,7 @@ public class EditExpense {
                     Boolean run = true;
                     if (!amount.getText().isEmpty())
                         if (amount.getText().matches("[0-9]+"))
-                            expense.amount = Integer.parseInt(amount.getText());
+                            expense.amount = Double.parseDouble(amount.getText());
                         else {
                             new Notify("Amount must be an integer");
                             run = false;
